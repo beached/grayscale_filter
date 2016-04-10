@@ -5,8 +5,8 @@ project(grayscale_filter)
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.59.0 REQUIRED COMPONENTS python)
-set(Boost_Libs ${BOOST_Libraries} -lboost_python )
+find_package(Boost 1.59.0 REQUIRED COMPONENTS system filesystem regex unit_test_framework program_options iostreams python )
+set(Boost_Libs ${BOOST_Libraries} -lboost_system -lboost_regex -lboost_filesystem -lboost_program_options -lboost_iostreams -lboost_python )
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
 find_package( FreeImage REQUIRED )
@@ -34,4 +34,4 @@ link_directories( ${FREEIMAGE_LIBRARY_DIRS} )
 
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
-target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter -lFreeImage ${CMAKE_DL_LIBS} ${Boost_Libs} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
+target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter -lfreeimage ${CMAKE_DL_LIBS} ${Boost_Libs} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )

@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <climits>
+#include <limits>
 
 namespace random_help {
 	uint32_t time_seed( ) {
