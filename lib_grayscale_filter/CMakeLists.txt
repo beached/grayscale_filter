@@ -17,7 +17,7 @@ ENDIF( )
 
 enable_testing( )
 
-set(SOURCE_FILES
+set( SOURCE_FILES
 	filterdawgs.cpp
 	filterdawgs.h
 	filterdawgscolourize.cpp
@@ -36,5 +36,5 @@ set(SOURCE_FILES
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 #link_directories( ${Boost_LIBRARY_DIRS} )
 
-add_library (lib_grayscale_filter STATIC ${SOURCE_FILES})
+add_library( lib_grayscale_filter STATIC ${SOURCE_FILES} )
 target_link_libraries( lib_grayscale_filter ${Boost_Libraries} ${OPENSSL_LIBRARIES} )
