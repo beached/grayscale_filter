@@ -71,7 +71,7 @@ namespace daw {
 				return *this;
 			}
 
-			static float const colform( const GenericRGB<T>& c, float Red, float Green, float Blue ) {
+			static float colform( const GenericRGB<T>& c, float Red, float Green, float Blue ) {
 				return Red*static_cast<float>( c.red ) + Green*static_cast<float>( c.green ) + Blue*static_cast<float>( c.blue );
 			}
 

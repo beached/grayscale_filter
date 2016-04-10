@@ -52,7 +52,7 @@ namespace daw {
 			size_t m_id;
 			boost::shared_array<T> m_image_data;
 		public:
-			GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ), m_image_data( new T[m_size] ) {
+			GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<size_t>::getNext( ) ), m_image_data( new T[m_size] ) {
 				nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 			}
 

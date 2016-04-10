@@ -28,7 +28,7 @@
 #include <boost/unordered/unordered_map.hpp>
 #include <iterator>
 #include <map>
-#include <omp.h>
+//#include <omp.h>
 #include <stdexcept>
 #include <utility>
 #include <vector>

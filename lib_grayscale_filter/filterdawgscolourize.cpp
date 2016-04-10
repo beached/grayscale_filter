@@ -30,7 +30,7 @@
 #include <cmath>
 #include <limits>
 #include <map>
-#include <omp.h>
+//#include <omp.h>
 
 namespace daw {
 	namespace imaging {
