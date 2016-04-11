@@ -38,6 +38,7 @@
 #include <stdexcept>
 #include <string>
 #include "fimage.h"
+#include <boost/utility/string_ref.hpp>
 
 
 namespace daw {
@@ -91,8 +92,8 @@ namespace daw {
 #ifdef DAWFILTER_USEPYTHON
 			static void register_python( std::string const & nameoftype ) {
 				boost::python::class_<GenericImage>( nameoftype.c_str( ), boost::python::init<const GenericImage::pos_t, const GenericImage::pos_t>( ) )
-					.def( "fromFile", &GenericImage::fromFile ).static method( "fromFile" )
-					.def( "toFile", &GenericImage::toFile ).static method( "toFile" )
+					.def( "from_file", &GenericImage::from_file ).static method( "from_file" )
+					.def( "to_file", &GenericImage::to_file ).static method( "to_file" )
 					.add_property( "size", &GenericImage::size )
 					.add_property( "width", &GenericImage::width )
 					.add_property( "height", &GenericImage::height )
@@ -113,9 +114,9 @@ namespace daw {
 			boost::shared_array<rgb3> m_image_data;
 		public:
 			GenericImage( pos_t const width, pos_t const height );
-			static void toFile( std::string const& image_filename, GenericImage<rgb3> const& image_input );
-			void toFile( std::string const & image_filename ) const;
-			static GenericImage<rgb3> fromFile( std::string const& image_filename );
+			static void to_file( std::string const& image_filename, GenericImage<rgb3> const& image_input );
+			void to_file( std::string const & image_filename ) const;
+			static GenericImage<rgb3> from_file( boost::string_ref image_filename );
 			pos_t width( ) const;
 			pos_t height( ) const;
 			size_t size( ) const;
@@ -129,5 +130,6 @@ namespace daw {
 			static void register_python( std::string const& nameoftype );
 #endif
 		};
+		GenericImage<rgb3> from_file( boost::string_ref image_filename );
 	}	// namespace imaging
 }	// namespace daw

@@ -30,7 +30,7 @@ namespace daw {
 			nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 		}
 
-		void GenericImage<rgb3>::toFile( std::string const& image_filename, GenericImage<rgb3> const& image_input ) {
+		void GenericImage<rgb3>::to_file( std::string const& image_filename, GenericImage<rgb3> const& image_input ) {
 			try {
 				typedef GenericImage<rgb3>::pos_t pos_t;
 				FreeImage image_output( FreeImage_Allocate( static_cast<int32_t>(image_input.width( )), static_cast<int32_t>(image_input.height( )), 24 ) );
@@ -65,42 +65,42 @@ namespace daw {
 			}
 		}
 
-		void GenericImage<rgb3>::toFile( std::string const& image_filename ) const { 
-			GenericImage<rgb3>::toFile( image_filename, *this );
+		void GenericImage<rgb3>::to_file( std::string const& image_filename ) const { 
+			GenericImage<rgb3>::to_file( image_filename, *this );
 		}
 
-		GenericImage<rgb3> GenericImage<rgb3>::fromFile( std::string const& image_filename ) {
+		GenericImage<rgb3> GenericImage<rgb3>::from_file( boost::string_ref image_filename ) {
 			try {
 				typedef GenericImage<rgb3>::pos_t pos_t;
 				{
-					boost::filesystem::path const pImageFile( image_filename.c_str( ) );
+					boost::filesystem::path const pImageFile( image_filename.data( ) );
 					if( !boost::filesystem::exists( pImageFile ) ) {
-						std::string const msg = "The file '" + image_filename + "' cannot be found";
+						std::string const msg = "The file '" + image_filename.to_string( ) + "' cannot be found";
 						throw std::runtime_error( msg );
 					} else if( !boost::filesystem::is_regular_file( pImageFile ) ) {
-						std::string const msg = "The file '" + image_filename + "' is not a regular file";
+						std::string const msg = "The file '" + image_filename.to_string( ) + "' is not a regular file";
 						throw std::runtime_error( msg );
 					}
 				}
 
 				// Get Image Format and open the image
-				FREE_IMAGE_FORMAT fif = FreeImage_GetFileType( image_filename.c_str( ) );
+				FREE_IMAGE_FORMAT fif = FreeImage_GetFileType( image_filename.data( ) );
 				if( fif == FIF_UNKNOWN ) {
-					fif = FreeImage_GetFIFFromFilename( image_filename.c_str( ) );
+					fif = FreeImage_GetFIFFromFilename( image_filename.data( ) );
 					if( fif == FIF_UNKNOWN ) {
-						std::string const msg = "The file '" + image_filename + "' cannot be opened.  Cannot determine image type";
+						std::string const msg = "The file '" + image_filename.to_string( ) + "' cannot be opened.  Cannot determine image type";
 						throw std::runtime_error( msg );
 					}
 				}
 
-				FreeImage image_input( FreeImage_Load( fif, image_filename.c_str( ) ), "Could not open input image '" + image_filename + "'" );
+				FreeImage image_input( FreeImage_Load( fif, image_filename.data( ) ), "Could not open input image '" + image_filename.to_string( ) + "'" );
 				if( !( image_input.bpp( ) == 24 || image_input.bpp( ) == 32 ) || FreeImage_GetColorType( image_input.ptr( ) ) != FIC_RGB ) {
 					FIBITMAP * bitmap_test = nullptr;
 					bitmap_test = FreeImage_ConvertTo24Bits( image_input.ptr( ) );
 					if( nullptr == bitmap_test ) {
 						bitmap_test = FreeImage_ConvertTo32Bits( image_input.ptr( ) );
 						if( nullptr == bitmap_test ) {
-							std::string const msg = "'" + image_filename + "' is a non RGB8 file.  Files must be RGB8";
+							std::string const msg = "'" + image_filename.to_string( ) + "' is a non RGB8 file.  Files must be RGB8";
 							throw std::runtime_error( msg );
 						} else {
 							std::cerr << "Had to convert image to 32bit RGBA" << std::endl;
@@ -122,7 +122,7 @@ namespace daw {
 								rgb3 const rgb_out( rgb_in.rgbRed, rgb_in.rgbGreen, rgb_in.rgbBlue );
 								image_output( y, x ) = rgb_out;
 							} else {
-								std::string const msg = "Error retrieving pixel data from '" + image_filename + "'";
+								std::string const msg = "Error retrieving pixel data from '" + image_filename.to_string( ) + "'";
 								throw std::runtime_error( msg );
 							}
 						}
@@ -133,7 +133,7 @@ namespace daw {
 			} catch( std::runtime_error const & ) {
 				throw;
 			} catch( ... ) {
-				auto const msg = "Unknown error while reading file'" + image_filename + "'";
+				auto const msg = "Unknown error while reading file'" + image_filename.to_string( ) + "'";
 				throw std::runtime_error( msg );
 			}
 		}
@@ -170,11 +170,14 @@ namespace daw {
 			return m_image_data[pos];
 		}
 
+		GenericImage<rgb3> from_file( boost::string_ref image_filename ) {
+			return GenericImage<rgb3>::from_file( image_filename );
+		}
 #ifdef DAWFILTER_USEPYTHON
 		void GenericImage<rgb3>::register_python( std::string const& nameoftype ) {
 			boost::python::class_<GenericImage<rgb3> >( nameoftype.c_str( ), boost::python::init<const GenericImage<rgb3>::pos_t, const GenericImage<rgb3>::pos_t>( ) )
-				.def( "fromFile", &GenericImage<rgb3>::fromFile ).static method( "fromFile" )
-				.def( "toFile", &GenericImage<rgb3>::toFile ).static method( "toFile" )
+				.def( "from_file", &GenericImage<rgb3>::from_file ).static method( "from_file" )
+				.def( "to_file", &GenericImage<rgb3>::to_file ).static method( "to_file" )
 				.add_property( "size", &GenericImage<rgb3>::size )
 				.add_property( "width", &GenericImage<rgb3>::width )
 				.add_property( "height", &GenericImage<rgb3>::height )

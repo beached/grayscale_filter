@@ -28,9 +28,7 @@
 int main( int argc, char ** argv ) {
 	assert( argc > 2 );
 	using namespace daw::imaging;
-	auto const in_file = GenericImage<rgb3>::fromFile( argv[1] );
-	auto const out_file = FilterDAWGS::filter( in_file );
-	out_file.toFile( argv[2] );
+	FilterDAWGS::filter( from_file( argv[1] ) ).to_file( argv[2] );
 
 
 	return EXIT_SUCCESS;
