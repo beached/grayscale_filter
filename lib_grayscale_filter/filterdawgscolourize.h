@@ -35,7 +35,7 @@
 namespace daw {
 	namespace imaging {
 		struct FilterDAWGSColourize {
-			enum class repaint_formulas { Ratio, YUV, Multiply_1, Addition, Multiply_2, HSL };
+			enum class repaint_formulas : uint8_t { Ratio, YUV, Multiply_1, Addition, Multiply_2, HSL };
 
 			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, FilterDAWGSColourize::repaint_formulas const repaint_formula = FilterDAWGSColourize::repaint_formulas::Ratio );
 
@@ -47,3 +47,12 @@ namespace daw {
 		};	// struct FilterDAWGSColourize
 	}	// namespace imaging
 }	// namespace daw
+
+namespace std {
+	template<> struct hash<daw::imaging::FilterDAWGSColourize::repaint_formulas> {
+		size_t operator( )( daw::imaging::FilterDAWGSColourize::repaint_formulas rf ) const { 
+			return static_cast<size_t>( rf );
+		}
+	};	// struct hash<daw::imaging::FilterDAWGSColourize::repaint_formulas>
+}	// namespace std
+
