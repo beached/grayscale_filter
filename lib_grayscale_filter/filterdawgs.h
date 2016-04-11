@@ -30,24 +30,22 @@
 #endif
 #include <string>
 
-namespace daw { namespace imaging {
-	class FilterDAWGS {
-	public:
-		static GenericImage<uchar3> filter( GenericImage<uchar3> const & input_image );
-	
-		static std::string const description( ) {
-			return "Convert an RGB image to an optimized grayscale image";
-		}
+namespace daw {
+	namespace imaging {
+		class FilterDAWGS {
+		public:
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const & input_image );
 
-		inline static int too_gs( uchar3 const & pixel ) {
-			return 19595*pixel.red + 38469*pixel.green + 7471*pixel.blue;	// 0.299r + 0.587g + 0.114b
-		}
-		
+			static std::string description( ) {
+				return "Convert an RGB image to an optimized grayscale image";
+			}
+
+			static int too_gs(rgb3 const & pixel);
+
 #ifdef DAWFILTER_USEPYTHON
-		static void register_python( std::string const nameoftype = "filter_dawgs" ) {
-			boost::python::def( nameoftype.c_str( ), &FilterDAWGS::filter );
-		}
+			static void register_python(std::string const nameoftype = "filter_dawgs");
 #endif
-	};
-}}
+		};
+	}
+}
 

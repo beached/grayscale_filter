@@ -28,7 +28,7 @@
 #include <climits>
 
 namespace random_help {
-	const unsigned int time_seed( ) {
+	unsigned int time_seed( ) {
 		time_t now = time( nullptr );
 		unsigned char* p = (unsigned char *)&now;
 		nullcheck( p, "Point to a struct should never return null" );
@@ -40,8 +40,8 @@ namespace random_help {
 		return seed;
 	}
 
-	const double uniform_deviate( int seed ) {
+	double uniform_deviate( int seed ) {
 		return seed*(1.0/(RAND_MAX+1.0));
 	}
-}
+}	// namespace random_help
 

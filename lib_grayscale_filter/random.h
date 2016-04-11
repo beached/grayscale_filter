@@ -25,19 +25,18 @@
 #include <cstdlib>
 
 namespace random_help {
-	const double uniform_deviate( int seed );
-	const unsigned int time_seed( );
+	double uniform_deviate( int seed );
+	unsigned int time_seed( );
 }
 
-template<class T, T min=(T)0, T max=(T)100000000>
+template<class T, T min = 0, T max = static_cast<T>(100000000)>
 class Random {
-private:
-	static const int getNextValue( const T low, const T high ) {
-		return (T)((double)low + random_help::uniform_deviate( rand( ) )*(double)(high - low));
+	static int getNextValue( const T low, const T high ) {
+		return static_cast<T>(static_cast<double>(low) + random_help::uniform_deviate( rand( ) )*static_cast<double>(high - low));
 	}
 public:
-	static const T getNext( ) {
-		static bool has_seeded = false;
+	static T getNext( ) {
+		static auto has_seeded = false;
 		if( !has_seeded ) {
 			has_seeded = true;
 			srand( random_help::time_seed( ) );

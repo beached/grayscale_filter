@@ -22,49 +22,46 @@
 
 #pragma once
 
-#include "genericimage.h"
-#include "genericrgb.h"
-
-namespace daw { namespace imaging {	
-	class Helpers {
-	public:
-		template<class T>
-		static const T max3( const T &value1, const T &value2, const T &value3 ) {
-			T maxval = value1;
-			if( value2 > maxval ) {
-				maxval = value2;
+namespace daw {
+	namespace imaging {
+		namespace helpers {
+			template<class T>
+			T max3( T value1, T value2, T value3 ) {
+				T maxval = value1;
+				if( value2 > maxval ) {
+					maxval = value2;
+				}
+				if( value3 > maxval ) {
+					maxval = value3;
+				}
+				return maxval;
 			}
-			if( value3 > maxval ) {
-				maxval = value3;
-			}
-			return maxval;
-		}
 
-		template<class T>
-		static const T min3( const T &value1, const T &value2, const T &value3 ) {
-			T maxval = value1;
-			if( value2 < maxval ) {
-				maxval = value2;
+			template<class T>
+			T min3( T value1, T value2, T value3 ) {
+				T maxval = value1;
+				if( value2 < maxval ) {
+					maxval = value2;
+				}
+				if( value3 < maxval ) {
+					maxval = value3;
+				}
+				return maxval;
 			}
-			if( value3 < maxval ) {
-				maxval = value3;
+
+			template<class T>
+			void clampvalue( T & value, T min, T max ) {
+				if( value < min ) {
+					value = min;
+				} else if( value > max ) {
+					value = max;
+				}
 			}
-			return maxval;
-		}
 
-		template<class T>
-		static void clampvalue( T &value, const T min, const T max ) {
-			if( value < min ) {
-				value = min;
-			} else if( value > max ) {
-				value = max;
+			template<class T>
+			float too_gs_small( T red, T green, T blue ) {
+				return 0.299f*static_cast<float>(red) + 0.587f*static_cast<float>(green) + 0.114f*static_cast<float>(blue);
 			}
-		}
-
-		template<class T>
-		static float too_gs_small( const T &red, const T &green, const T &blue ) {
-			return 0.299f*(float)red + 0.587f*(float)green + 0.114f*(float)blue;
-		}
-	};
-}}
-
+		}	// namespace helpers
+	}	// namespace imaging
+}	// namespace daw

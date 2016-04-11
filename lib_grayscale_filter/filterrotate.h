@@ -30,16 +30,16 @@
 #endif
 #include <string>
 
-namespace daw { namespace imaging {
-	class FilterRotate {	
-	public:
-		static GenericImage<uchar3> filter( const GenericImage<uchar3> &image_input, const unsigned int angle );
+namespace daw {
+	namespace imaging {
+		class FilterRotate {
+		public:
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const & image_input, unsigned int const angle );
 
 #ifdef DAWFILTER_USEPYTHON
-		static void register_python( const std::string nameoftype = "filter_rotate" ) {
-			boost::python::def( nameoftype.c_str( ), &FilterRotate::filter );
-		}
+			static void register_python(std::string const nameoftype = "filter_rotate");
 #endif
-	};
-}}
+		};
+	}
+}
 

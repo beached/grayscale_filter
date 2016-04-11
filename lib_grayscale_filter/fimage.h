@@ -27,71 +27,26 @@
 #include <FreeImage.h>
 #include <string>
 
-namespace daw { namespace imaging {
-	class FreeImage {
-		FIBITMAP* m_bitmap;			
+namespace daw {
+	namespace imaging {
+		class FreeImage {
+			FIBITMAP * m_bitmap;
 
-	public:
-		FreeImage( FIBITMAP* bitmap ): m_bitmap( bitmap ) {
-			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
-		}
+		public:
+			FreeImage( FIBITMAP * bitmap );
+			FreeImage( FIBITMAP * bitmap, std::string const & errmsg );
+			FreeImage( FreeImage const & other );
+			~FreeImage( );
 
-		FreeImage( FIBITMAP * bitmap, std::string const & errmsg ): m_bitmap( bitmap ) {
-			nullcheck( m_bitmap, errmsg );
-		}
-		
-		FreeImage( FreeImage const & other ): m_bitmap( FreeImage_Clone( other.m_bitmap ) ) {
-			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
-		}
-
-		inline FreeImage& take( FreeImage& other ) {
-			if( this != &other ) {
-				nullcheck( other.m_bitmap, "Error, attempt to take ownership from a null FreImage" );
-				m_bitmap = other.m_bitmap;
-				other.m_bitmap = nullptr;
-			}
-			return *this;
-		}
-
-		inline FreeImage& take( FIBITMAP* bitmap ) {
-			if( m_bitmap != bitmap ) {
-				nullcheck( bitmap, "Error, attempt to take ownership from a null FreImage" );
-				m_bitmap = bitmap;				
-			}
-			return *this;
-		}
-
-		inline void close( ) {
-			if( nullptr != m_bitmap ) {
-				FreeImage_Unload( m_bitmap );
-				m_bitmap = nullptr;
-			}
-		}
-
-		inline FIBITMAP * ptr( ) {
-			return m_bitmap;
-		}
-
-		inline FIBITMAP const * ptr( ) const {
-			return m_bitmap;
-		}
-
-
-		inline unsigned int height( ) const {
-			return FreeImage_GetHeight( m_bitmap );
-		}
-
-		inline unsigned int width( ) const {
-			return FreeImage_GetWidth( m_bitmap );
-		}
-
-		inline unsigned int bpp( ) const {
-			return FreeImage_GetBPP( m_bitmap );
-		}		
-
-		~FreeImage( ) {
-			close( );
-		}
-	};
-}}
+			FreeImage & take( FreeImage & other );
+			FreeImage & take( FIBITMAP * bitmap );
+			void close( );
+			FIBITMAP * ptr( );
+			FIBITMAP const * ptr( ) const;
+			unsigned int height( ) const;
+			unsigned int width( ) const;
+			unsigned int bpp( ) const;
+		};
+	}
+}
 

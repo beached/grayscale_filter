@@ -27,7 +27,9 @@ set( SOURCE_FILES
 	filterdawgscolourize.h
 	filterrotate.cpp
 	filterrotate.h
+	fimage.cpp
 	fimage.h
+	genericimage.cpp
 	genericimage.h
 	genericrgb.h
 	helpers.h
@@ -37,7 +39,7 @@ set( SOURCE_FILES
  )
 
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
-include_directories( SYSTEM ${FreeImage_INCLUDE_DIRS} )
+include_directories( SYSTEM ${FREEIMAGE_INCLUDE_DIRS} )
 
 add_library( lib_grayscale_filter STATIC ${SOURCE_FILES} )
 target_link_libraries( lib_grayscale_filter ${Boost_Libraries} )
