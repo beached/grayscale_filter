@@ -113,9 +113,9 @@ namespace daw {
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
 				{
-					int const maxy = static_cast<int>( image_output.height( ) ) - 1;
+					int const maxy = static_cast<int32_t>( image_output.height( ) ) - 1;
 #pragma omp parallel for
-					for( int32_t y = 0; y < static_cast<int>( image_output.height( ) ); ++y ) {
+					for( int32_t y = 0; y < static_cast<int32_t>( image_output.height( ) ); ++y ) {
 						RGBQUAD rgb_in;
 						for( pos_t x = 0; x < image_output.width( ); ++x ) {
 							if( FreeImage_GetPixelColor( image_input.ptr( ), static_cast<uint32_t>( x ), static_cast<uint32_t>( maxy - y ), &rgb_in ) ) {
@@ -154,21 +154,38 @@ namespace daw {
 			return m_id;
 		}
 
-		rgb3 const & GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) const {
+		GenericImage<rgb3>::const_reference GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) const {
 			return m_image_data[y*m_width + x];
 		}
 
-		rgb3& GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) {
+		GenericImage<rgb3>::reference GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) {
 			return m_image_data[y*m_width + x];
 		}
 
-		rgb3 const& GenericImage<rgb3>::operator[]( size_t const pos ) const {
+		GenericImage<rgb3>::const_reference GenericImage<rgb3>::operator[]( size_t const pos ) const {
 			return m_image_data[pos];
 		}
 
-		rgb3& GenericImage<rgb3>::operator[]( size_t const pos ) {
+		GenericImage<rgb3>::reference GenericImage<rgb3>::operator[]( size_t const pos ) {
 			return m_image_data[pos];
 		}
+
+		GenericImage<rgb3>::iterator GenericImage<rgb3>::begin( ) {
+			return m_image_data.get( );
+		}
+
+		GenericImage<rgb3>::const_iterator GenericImage<rgb3>::begin( ) const {
+			return m_image_data.get( );
+		}
+
+		GenericImage<rgb3>::iterator GenericImage<rgb3>::end( ) {
+			return m_image_data.get( ) + m_size;
+		}
+
+		GenericImage<rgb3>::const_iterator GenericImage<rgb3>::end( ) const {
+			return m_image_data.get( ) + m_size;
+		}
+
 
 		GenericImage<rgb3> from_file( boost::string_ref image_filename ) {
 			return GenericImage<rgb3>::from_file( image_filename );

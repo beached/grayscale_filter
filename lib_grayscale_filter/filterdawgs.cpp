@@ -40,9 +40,9 @@ namespace daw {
 			typedef boost::unordered_map<int32_t,int32_t> valuepos_t;
 			valuepos_t valuepos;
 
-			//no parallel to valuepos
-			for( size_t n = 0; n < image_input.size( ); ++n ) {
-				valuepos[FilterDAWGS::too_gs( image_input[n] )] = 0;
+			//no parallel to valuepos			
+			for( auto & rgb : image_input ) {
+				valuepos[FilterDAWGS::too_gs( rgb )] = 0;
 			}
 
 			if( valuepos.size( ) > 256 ) {
@@ -52,20 +52,20 @@ namespace daw {
 					boost::scoped_array<uint32_t> keys( new uint32_t[keys_size] );
 					{
 						size_t n = 0;
-						for( auto it = valuepos.begin( ); it != valuepos.end( ); ++it ) {
-							keys[n++] = it->first;
+						for( auto const & val : valuepos ) {
+							keys[n++] = val.first;
 						}
 					}
 
 					std::sort( keys.get( ), keys.get( ) + keys_size );
 
 #pragma omp parallel for
-					for( int32_t n = 0; n < static_cast<int>( keys_size ); ++n ) {
-						auto const curval = static_cast<int>( static_cast<float>( n ) / inc );
-						int const curkey = keys[n];	// TODO clarify why sign changes
+					for( int32_t n = 0; n < static_cast<int32_t>( keys_size ); ++n ) {
+						auto const curval = static_cast<int32_t>( static_cast<float>( n ) / inc );
+						auto const curkey = static_cast<int32_t>(keys[n]);	// TODO clarify why sign changes
 #ifdef _DEBUG
 						if( curval > 255 ) {
-							std::string const msg = "Position in grayscale is too large and cannot fitint32_to 8 bits";
+							std::string const msg = "Position in grayscale is too large and cannot fit into 8 bits";
 							throw std::runtime_error( msg );
 						}
 #endif				
@@ -75,21 +75,19 @@ namespace daw {
 
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
-#pragma omp parallel for
-				for( int32_t n = 0; n < static_cast<int>( image_input.size( ) ); ++n ) {
-					auto const curval = static_cast<uint8_t>( valuepos[FilterDAWGS::too_gs( image_input[n] )] );
-					image_output[n] = curval;
-				}
+				// TODO: make parallel
+				std::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), [&vp=valuepos]( rgb3 const & rgb ) {
+					return static_cast<uint8_t>(vp[FilterDAWGS::too_gs( rgb )]);
+				} );
 				return image_output;
 			} else { // Already a grayscale image or has enough room for all possible values and no compression needed
 				std::cerr << "Already a grayscale image or has enough room for all possible values and no compression needed:" << valuepos.size( ) << std::endl;
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
-#pragma omp parallel for
-				for( int32_t n = 0; n < static_cast<int>( image_input.size( ) ); ++n ) {
-					auto const curval = static_cast<uint8_t>( image_input[n].too_float_gs( ) );
-					image_output[n] = curval;
-				}
+				// TODO: make parallel
+				std::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
+					return static_cast<uint8_t>(rgb.too_float_gs( ));
+				} );
 				return image_output;
 			}
 		}

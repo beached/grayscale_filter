@@ -71,7 +71,7 @@ namespace daw {
 					forig.red = boost::math::round( forig.red*rat );
 					forig.green = boost::math::round( forig.green*rat );
 					forig.blue = boost::math::round( forig.blue*rat );
-					return GenericRGB<int>( static_cast<int>( forig.red ), static_cast<int>( forig.green ), static_cast<int>( forig.blue ) );
+					return GenericRGB<int>( static_cast<int32_t>( forig.red ), static_cast<int32_t>( forig.green ), static_cast<int32_t>( forig.blue ) );
 				}
 				break;
 				case 1:
@@ -82,9 +82,9 @@ namespace daw {
 					auto const U = orig.colform( -0.147f, -0.289f, 0.436f );
 					auto const V = orig.colform( 0.615f, -0.515f, -0.1f );
 
-					auto const R = static_cast<int>( Y + 1.14f*V );
-					auto const G = static_cast<int>( Y - 0.395f*U - 0.581f*V );
-					auto const B = static_cast<int>( Y + 2.032f*U );
+					auto const R = static_cast<int32_t>( Y + 1.14f*V );
+					auto const G = static_cast<int32_t>( Y - 0.395f*U - 0.581f*V );
+					auto const B = static_cast<int32_t>( Y + 2.032f*U );
 					//int B = (int32_t)( Y + 1.5f*U );
 					return GenericRGB<int>( R, G, B );
 				}
@@ -100,9 +100,9 @@ namespace daw {
 					int const maxval = orig.max( );
 					if( maxval > 0 ) {
 						auto const luma = static_cast<float>( grayscale );
-						auto red = static_cast<int>( ( static_cast<float>( orig.red )*luma ) / maxval );
-						auto green = static_cast<int>( ( static_cast<float>( orig.green )*luma ) / maxval );
-						auto blue = static_cast<int>( ( static_cast<float>( orig.blue )*luma ) / maxval );
+						auto red = static_cast<int32_t>( ( static_cast<float>( orig.red )*luma ) / maxval );
+						auto green = static_cast<int32_t>( ( static_cast<float>( orig.green )*luma ) / maxval );
+						auto blue = static_cast<int32_t>( ( static_cast<float>( orig.blue )*luma ) / maxval );
 						return GenericRGB<int>( std::move( red ), std::move( green ), std::move( blue ) );
 					} else {
 						return GenericRGB<int>( 0, 0, 0 );
@@ -165,7 +165,7 @@ namespace daw {
 
 						rgb.mul( 255.0f );
 
-						return GenericRGB<int>( static_cast<int>( rgb.red ), static_cast<int>( rgb.green ), static_cast<int>( rgb.blue ) );
+						return GenericRGB<int>( static_cast<int32_t>( rgb.red ), static_cast<int32_t>( rgb.green ), static_cast<int32_t>( rgb.blue ) );
 					}
 
 				}
@@ -212,11 +212,11 @@ namespace daw {
 			GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
 
 #pragma omp parallel for
-			for( int32_t n = 0; n < static_cast<int>( input_image.size( ) ); ++n ) {
+			for( int32_t n = 0; n < static_cast<int32_t>( input_image.size( ) ); ++n ) {
 				GenericRGB<int> cur_value;
-				cur_value.red = static_cast<int>( static_cast<float>( tmpimgdata[n].red - pd_min.red )*mul_fact );
-				cur_value.green = static_cast<int>( static_cast<float>( tmpimgdata[n].green - pd_min.green )*mul_fact );
-				cur_value.blue = static_cast<int>( static_cast<float>( tmpimgdata[n].blue - pd_min.blue )*mul_fact );
+				cur_value.red = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].red - pd_min.red )*mul_fact );
+				cur_value.green = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].green - pd_min.green )*mul_fact );
+				cur_value.blue = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].blue - pd_min.blue )*mul_fact );
 				cur_value.clampvalue( 0, 255 );
 				output_image[n] = rgb3( static_cast<uint8_t>( cur_value.red ), static_cast<uint8_t>( cur_value.green ), static_cast<uint8_t>( cur_value.blue ) );
 			}

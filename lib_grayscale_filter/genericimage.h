@@ -106,12 +106,18 @@ namespace daw {
 		class GenericImage<rgb3> {
 		public:
 			using pos_t = uint32_t;
+			using values_type = boost::shared_array<rgb3>;
+			using iterator = rgb3 *;
+			using const_iterator = rgb3 const *;
+			using value_type = rgb3;
+			using reference = rgb3 &;
+			using const_reference = rgb3 const &;
 		private:
 			pos_t m_width;
 			pos_t m_height;
 			size_t m_size;
 			size_t m_id;
-			boost::shared_array<rgb3> m_image_data;
+			values_type m_image_data;
 		public:
 			GenericImage( pos_t const width, pos_t const height );
 			static void to_file( std::string const& image_filename, GenericImage<rgb3> const& image_input );
@@ -121,11 +127,14 @@ namespace daw {
 			pos_t height( ) const;
 			size_t size( ) const;
 			size_t id( ) const;
-			rgb3 const & operator( )( pos_t const y, pos_t const x ) const;
-			rgb3 & operator( )( pos_t const y, pos_t const x );
-			rgb3 const & operator[]( size_t const pos ) const;
-			rgb3 & operator[]( size_t const pos );
-
+			const_reference operator( )( pos_t const y, pos_t const x ) const;
+			reference operator( )( pos_t const y, pos_t const x );
+			const_reference operator[]( size_t const pos ) const;
+			reference operator[]( size_t const pos );
+			iterator begin( );
+			const_iterator begin( ) const;
+			iterator end( );
+			const_iterator end( ) const;
 #ifdef DAWFILTER_USEPYTHON
 			static void register_python( std::string const& nameoftype );
 #endif
