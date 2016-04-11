@@ -33,7 +33,7 @@ namespace random_help {
 template<class T, T min = 0, T max = static_cast<T>( 100000000 )>
 class Random {
 	static int32_t getNextValue( const T low, const T high ) {
-		return static_cast<T>( static_cast<double>( low ) + random_help::uniform_deviate( rand( ) )*static_cast<double>( high - low ) );
+		return static_cast<int32_t>( static_cast<double>( low ) + random_help::uniform_deviate( rand( ) )*static_cast<double>( high - low ) );
 	}
 public:
 	static T getNext( ) {
@@ -42,7 +42,7 @@ public:
 			has_seeded = true;
 			srand( random_help::time_seed( ) );
 		}
-		return getNextValue( min, max );
+		return static_cast<T>(getNextValue( min, max ));
 	}
 };
 

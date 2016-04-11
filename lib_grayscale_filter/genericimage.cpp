@@ -65,6 +65,10 @@ namespace daw {
 			}
 		}
 
+		void GenericImage<rgb3>::toFile( std::string const& image_filename ) const { 
+			GenericImage<rgb3>::toFile( image_filename, *this );
+		}
+
 		GenericImage<rgb3> GenericImage<rgb3>::fromFile( std::string const& image_filename ) {
 			try {
 				typedef GenericImage<rgb3>::pos_t pos_t;

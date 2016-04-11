@@ -114,6 +114,7 @@ namespace daw {
 		public:
 			GenericImage( pos_t const width, pos_t const height );
 			static void toFile( std::string const& image_filename, GenericImage<rgb3> const& image_input );
+			void toFile( std::string const & image_filename ) const;
 			static GenericImage<rgb3> fromFile( std::string const& image_filename );
 			pos_t width( ) const;
 			pos_t height( ) const;
