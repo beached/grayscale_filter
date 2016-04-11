@@ -29,7 +29,6 @@
 
 namespace daw { namespace imaging {
 	class FreeImage {
-	private:
 		FIBITMAP* m_bitmap;			
 
 	public:
@@ -37,11 +36,11 @@ namespace daw { namespace imaging {
 			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
 		}
 
-		FreeImage( FIBITMAP* bitmap, const std::string& errmsg ): m_bitmap( bitmap ) {
+		FreeImage( FIBITMAP * bitmap, std::string const & errmsg ): m_bitmap( bitmap ) {
 			nullcheck( m_bitmap, errmsg );
 		}
 		
-		FreeImage( const FreeImage& other ): m_bitmap( FreeImage_Clone( other.m_bitmap ) ) {
+		FreeImage( FreeImage const & other ): m_bitmap( FreeImage_Clone( other.m_bitmap ) ) {
 			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
 		}
 
@@ -69,19 +68,24 @@ namespace daw { namespace imaging {
 			}
 		}
 
-		inline FIBITMAP* const ptr( ) {
+		inline FIBITMAP * ptr( ) {
 			return m_bitmap;
 		}
 
-		inline const unsigned int height( ) const {
+		inline FIBITMAP const * ptr( ) const {
+			return m_bitmap;
+		}
+
+
+		inline unsigned int height( ) const {
 			return FreeImage_GetHeight( m_bitmap );
 		}
 
-		inline const unsigned int width( ) const {
+		inline unsigned int width( ) const {
 			return FreeImage_GetWidth( m_bitmap );
 		}
 
-		inline const unsigned int bpp( ) const {
+		inline unsigned int bpp( ) const {
 			return FreeImage_GetBPP( m_bitmap );
 		}		
 
