@@ -30,8 +30,7 @@ include_directories( ./lib_grayscale_filter )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 include_directories( SYSTEM ${FREEIMAGE_INCLUDE_DIRS} )
-link_directories( ${FREEIMAGE_LIBRARY_DIRS} )
-
+link_directories( ${FREEIMAGE_LIBRARIES} )
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
-target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter -lfreeimage ${CMAKE_DL_LIBS} ${Boost_Libs} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
+target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter ${CMAKE_DL_LIBS} ${Boost_Libs} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )

@@ -48,8 +48,9 @@ random.h
 )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include_directories( SYSTEM ${FREEIMAGE_INCLUDE_DIRS} )
+link_directories( ${FREEIMAGE_LIBRARIES} )
 
 add_library( lib_grayscale_filter STATIC ${SOURCE_FILES} )
-target_link_libraries( lib_grayscale_filter ${Boost_Libraries} )
+target_link_libraries( lib_grayscale_filter ${Boost_Libraries} freeimage )
 
 
