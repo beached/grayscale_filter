@@ -39,7 +39,7 @@ namespace daw { namespace imaging {
 		switch( angle ) {	// 0/default = no rotation, 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees
 		case 1: {
 			GenericImage<uchar3> image_rotated( image_input.height( ), image_input.width( ) );
-			const pos_t maxy = image_input.height( ) - 1;
+			pos_t const maxy = image_input.height( ) - 1;
 
 			#pragma omp parallel for
 			for( int y=0; y<(int)image_input.height( ); ++y ) {
@@ -51,8 +51,8 @@ namespace daw { namespace imaging {
 				}
 		case 2: {
 			GenericImage<uchar3> image_rotated( image_input.width( ), image_input.height( ) );			
-			const pos_t maxx = image_input.width( ) - 1;
-			const pos_t maxy = image_input.height( ) - 1;
+			pos_t const maxx = image_input.width( ) - 1;
+			pos_t const maxy = image_input.height( ) - 1;
 			#pragma omp parallel for
 			for( int y=0; y<(int)image_input.height( ); ++y ) {
 				for( pos_t x=0; x<image_input.width( ); ++x ) {
@@ -63,7 +63,7 @@ namespace daw { namespace imaging {
 				}
 		case 3: {
 			GenericImage<uchar3> image_rotated( image_input.height( ), image_input.width( ) );			
-			const pos_t maxx = image_input.width( ) - 1;
+			pos_t const maxx = image_input.width( ) - 1;
 			#pragma omp parallel for
 			for( int y=0; y<(int)image_input.height( ); ++y ) {
 				for( pos_t x=0; x<image_input.width( ); ++x ) {

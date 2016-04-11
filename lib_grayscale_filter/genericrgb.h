@@ -28,6 +28,7 @@
 #include <boost/python.hpp>
 #endif
 #include <string>
+#include <cstdint>
 
 namespace daw { namespace imaging {
 	template<class T>
@@ -168,11 +169,10 @@ namespace daw { namespace imaging {
 	};
 }}
 
-typedef daw::imaging::GenericRGB<unsigned char> uchar3;
-
-#else
-namespace daw { namespace imaging {
-	template<class T> class GenericRGB;
-	typedef daw::imaging::GenericRGB<unsigned char> uchar3;
-}}
+using uchar3 = daw::imaging::GenericRGB<uint8_t>;
+// #else
+// namespace daw { namespace imaging {
+// 	template<class T> class GenericRGB;
+// 	typedef daw::imaging::GenericRGB<unsigned char> uchar3;
+// }}
 

@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "fimage.h"
 #include "genericrgb.h"
 #include "nullptr.h"
 #include "random.h"
@@ -41,9 +40,8 @@
 
 namespace daw { namespace imaging {
 	template<class T>
-	class GenericImage {
-	public:
-		typedef unsigned int pos_t;
+	struct GenericImage {
+		using pos_t = unsigned int;
 	private:				
 		pos_t m_width;
 		pos_t m_height;
@@ -51,39 +49,39 @@ namespace daw { namespace imaging {
 		size_t m_id;
 		boost::shared_array<T> m_image_data;
 	public:
-		GenericImage( const pos_t width, const pos_t height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ),  m_image_data( new T[m_size] )  {
+		GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ),  m_image_data( new T[m_size] )  {
 			nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 		}
 
-		const pos_t width( ) const {
+		pos_t width( ) const {
 			return m_width;
 		}
 
-		const pos_t height( ) const {
+		pos_t height( ) const {
 			return m_height;
 		}
 
-		const size_t size( ) const {
+		size_t size( ) const {
 			return m_size;
 		}
 
-		const size_t id( ) const {
+		size_t id( ) const {
 			return m_id;
 		}
 
-		const T operator( )( const pos_t row, const pos_t col ) const {
+		T const & operator( )( pos_t const row, pos_t const col ) const {
 			return m_image_data[row*m_width+col];
 		}
 
-		T& operator( )( const pos_t row, const pos_t col ) {
+		T & operator( )( pos_t const row, pos_t const col ) {
 			return m_image_data[row*m_width+col];
 		}
 
-		const T operator[]( const size_t pos ) const {
+		T const & operator[]( size_t const pos ) const {
 			return m_image_data[pos];
 		}
 
-		T& operator[]( const size_t pos ) {
+		T & operator[]( size_t const pos ) {
 			return m_image_data[pos];
 		}
 
@@ -111,7 +109,7 @@ namespace daw { namespace imaging {
 		size_t m_id;
 		boost::shared_array<uchar3> m_image_data;
 	public:
-		GenericImage( const pos_t width, const pos_t height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ),  m_image_data( new GenericRGB<unsigned char>[m_size] )  {
+		GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ),  m_image_data( new GenericRGB<unsigned char>[m_size] )  {
 			nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 		}
 
@@ -219,35 +217,35 @@ namespace daw { namespace imaging {
 			}
 		}
 
-		const pos_t width( ) const {
+		pos_t const width( ) const {
 			return m_width;
 		}
 
-		const pos_t height( ) const {
+		pos_t const height( ) const {
 			return m_height;
 		}
 
-		const size_t size( ) const {
+		size_t const size( ) const {
 			return m_size;
 		}
 
-		const size_t id( ) const {
+		size_t const id( ) const {
 			return m_id;
 		}
 
-		const uchar3 operator( )( const pos_t y, const pos_t x ) const {
+		const uchar3 operator( )( pos_t const y, pos_t const x ) const {
 			return m_image_data[y*m_width+x];
 		}
 
-		uchar3& operator( )( const pos_t y, const pos_t x ) {
+		uchar3& operator( )( pos_t const y, pos_t const x ) {
 			return m_image_data[y*m_width+x];
 		}
 
-		const uchar3 operator[]( const size_t pos ) const {
+		const uchar3 operator[]( size_t const pos ) const {
 			return m_image_data[pos];
 		}
 
-		uchar3& operator[]( const size_t pos ) {
+		uchar3& operator[]( size_t const pos ) {
 			return m_image_data[pos];
 		}
 
