@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #include "nullptr.h"
 #include "random.h"
 
@@ -28,20 +29,20 @@
 #include <climits>
 
 namespace random_help {
-	unsigned int time_seed( ) {
-		time_t now = time( nullptr );
-		unsigned char* p = (unsigned char *)&now;
+	uint32_t time_seed( ) {
+		auto now = time( nullptr );
+		auto p = reinterpret_cast<uint8_t *>( &now );
 		nullcheck( p, "Point to a struct should never return null" );
-		size_t sizeof_now = sizeof( now );
-		unsigned int seed = 0;
+		auto sizeof_now = sizeof( now );
+		uint32_t seed = 0;
 		for( size_t i = 0; i<sizeof_now; ++i ) {
-			seed = seed * (UCHAR_MAX + 2U) + p[i];
+			seed = seed * ( std::numeric_limits<uint8_t>::max( ) + 2U ) + p[i];
 		}
 		return seed;
 	}
 
-	double uniform_deviate( int seed ) {
-		return seed*(1.0/(RAND_MAX+1.0));
+	double uniform_deviate( int32_t seed ) {
+		return seed*( 1.0/( RAND_MAX+1.0 ) );
 	}
 }	// namespace random_help
 

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -20,19 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #pragma once
 
 #include <cstdlib>
 
 namespace random_help {
-	double uniform_deviate( int seed );
-	unsigned int time_seed( );
+	double uniform_deviate( int32_t seed );
+	uint32_t time_seed( );
 }
 
-template<class T, T min = 0, T max = static_cast<T>(100000000)>
+template<class T, T min = 0, T max = static_cast<T>( 100000000 )>
 class Random {
-	static int getNextValue( const T low, const T high ) {
-		return static_cast<T>(static_cast<double>(low) + random_help::uniform_deviate( rand( ) )*static_cast<double>(high - low));
+	static int32_t getNextValue( const T low, const T high ) {
+		return static_cast<T>( static_cast<double>( low ) + random_help::uniform_deviate( rand( ) )*static_cast<double>( high - low ) );
 	}
 public:
 	static T getNext( ) {

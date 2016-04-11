@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -20,30 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #include "genericimage.h"
 
 namespace daw {
 	namespace imaging {
 
-		GenericImage<rgb3>::GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ), m_image_data( new GenericRGB<unsigned char>[m_size] ) {
+		GenericImage<rgb3>::GenericImage( pos_t const width, pos_t const height ): m_width( width ), m_height( height ), m_size( width*height ), m_id( Random<int>::getNext( ) ), m_image_data( new GenericRGB<uint8_t>[m_size] ) {
 			nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 		}
 
 		void GenericImage<rgb3>::toFile( std::string const& image_filename, GenericImage<rgb3> const& image_input ) {
 			try {
 				typedef GenericImage<rgb3>::pos_t pos_t;
-				FreeImage image_output( FreeImage_Allocate( (int)image_input.width( ), (int)image_input.height( ), 24 ) );
+				FreeImage image_output( FreeImage_Allocate( static_cast<int32_t>(image_input.width( )), static_cast<int32_t>(image_input.height( )), 24 ) );
 				{
-					int const maxy = (int)image_input.height( ) - 1;
+					int const maxy = static_cast<int32_t>(image_input.height( )) - 1;
 #pragma omp parallel for
-					for( int y = 0; y < (int)image_input.height( ); ++y ) {
+					for( int32_t y = 0; y < static_cast<int32_t>(image_input.height( )); ++y ) {
 						RGBQUAD rgb_out;
 						for( pos_t x = 0; x < image_input.width( ); ++x ) {
 							rgb3 const rgb_in = image_input( y, x );
 							rgb_out.rgbBlue = rgb_in.blue;
 							rgb_out.rgbGreen = rgb_in.green;
 							rgb_out.rgbRed = rgb_in.red;
-							if( !FreeImage_SetPixelColor( image_output.ptr( ), static_cast<unsigned int>(x), static_cast<unsigned int>(maxy - y), &rgb_out ) ) {
+							if( !FreeImage_SetPixelColor( image_output.ptr( ), static_cast<uint32_t>( x ), static_cast<uint32_t>( maxy - y ), &rgb_out ) ) {
 								std::string const msg = "Error setting pixel data";
 								throw std::runtime_error( msg );
 							}
@@ -89,7 +90,7 @@ namespace daw {
 				}
 
 				FreeImage image_input( FreeImage_Load( fif, image_filename.c_str( ) ), "Could not open input image '" + image_filename + "'" );
-				if( !(image_input.bpp( ) == 24 || image_input.bpp( ) == 32) || FreeImage_GetColorType( image_input.ptr( ) ) != FIC_RGB ) {
+				if( !( image_input.bpp( ) == 24 || image_input.bpp( ) == 32 ) || FreeImage_GetColorType( image_input.ptr( ) ) != FIC_RGB ) {
 					FIBITMAP * bitmap_test = nullptr;
 					bitmap_test = FreeImage_ConvertTo24Bits( image_input.ptr( ) );
 					if( nullptr == bitmap_test ) {
@@ -108,12 +109,12 @@ namespace daw {
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
 				{
-					int const maxy = static_cast<int>(image_output.height( )) - 1;
+					int const maxy = static_cast<int>( image_output.height( ) ) - 1;
 #pragma omp parallel for
-					for( int y = 0; y < static_cast<int>(image_output.height( )); ++y ) {
+					for( int32_t y = 0; y < static_cast<int>( image_output.height( ) ); ++y ) {
 						RGBQUAD rgb_in;
 						for( pos_t x = 0; x < image_output.width( ); ++x ) {
-							if( FreeImage_GetPixelColor( image_input.ptr( ), static_cast<unsigned int>(x), static_cast<unsigned int>(maxy - y), &rgb_in ) ) {
+							if( FreeImage_GetPixelColor( image_input.ptr( ), static_cast<uint32_t>( x ), static_cast<uint32_t>( maxy - y ), &rgb_in ) ) {
 								rgb3 const rgb_out( rgb_in.rgbRed, rgb_in.rgbGreen, rgb_in.rgbBlue );
 								image_output( y, x ) = rgb_out;
 							} else {
@@ -149,11 +150,11 @@ namespace daw {
 			return m_id;
 		}
 
-		rgb3 const & GenericImage<rgb3>::operator()( pos_t const y, pos_t const x ) const {
+		rgb3 const & GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) const {
 			return m_image_data[y*m_width + x];
 		}
 
-		rgb3& GenericImage<rgb3>::operator()( pos_t const y, pos_t const x ) {
+		rgb3& GenericImage<rgb3>::operator( )( pos_t const y, pos_t const x ) {
 			return m_image_data[y*m_width + x];
 		}
 
@@ -168,8 +169,8 @@ namespace daw {
 #ifdef DAWFILTER_USEPYTHON
 		void GenericImage<rgb3>::register_python( std::string const& nameoftype ) {
 			boost::python::class_<GenericImage<rgb3> >( nameoftype.c_str( ), boost::python::init<const GenericImage<rgb3>::pos_t, const GenericImage<rgb3>::pos_t>( ) )
-				.def( "fromFile", &GenericImage<rgb3>::fromFile ).staticmethod( "fromFile" )
-				.def( "toFile", &GenericImage<rgb3>::toFile ).staticmethod( "toFile" )
+				.def( "fromFile", &GenericImage<rgb3>::fromFile ).static method( "fromFile" )
+				.def( "toFile", &GenericImage<rgb3>::toFile ).static method( "toFile" )
 				.add_property( "size", &GenericImage<rgb3>::size )
 				.add_property( "width", &GenericImage<rgb3>::width )
 				.add_property( "height", &GenericImage<rgb3>::height )

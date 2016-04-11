@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #pragma once
 
 #include "genericimage.h"
@@ -35,11 +36,11 @@ namespace daw {
 	namespace imaging {
 		class FilterDAWGSColourize {
 		public:
-			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, unsigned int const repaint_formula = 0 );
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula = 0 );
 
 			template<class T>
-			static std::unordered_map<T, int> get_repaint_formulas( ) {
-				std::unordered_map<T, int> ret;
+			static std::unordered_map<T,int32_t> get_repaint_formulas( ) {
+				std::unordered_map<T,int32_t> ret;
 				int count = 0;
 				ret["Ratio"] = count++;
 				ret["YUV"] = count++;
@@ -52,7 +53,7 @@ namespace daw {
 			}
 
 #ifdef DAWFILTER_USEPYTHON
-			static void register_python();
+			static void register_python( );
 #endif
 		};
 	}

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -34,10 +34,10 @@ namespace daw {
 	namespace imaging {
 		class FilterRotate {
 		public:
-			static GenericImage<rgb3> filter( GenericImage<rgb3> const & image_input, unsigned int const angle );
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const & image_input, uint32_t const angle );
 
 #ifdef DAWFILTER_USEPYTHON
-			static void register_python(std::string const nameoftype = "filter_rotate");
+			static void register_python( std::string const nameoftype = "filter_rotate" );
 #endif
 		};
 	}

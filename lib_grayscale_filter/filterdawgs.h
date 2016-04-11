@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 
 #pragma once
 
@@ -40,10 +41,10 @@ namespace daw {
 				return "Convert an RGB image to an optimized grayscale image";
 			}
 
-			static int too_gs(rgb3 const & pixel);
+			static int32_t too_gs( rgb3 const & pixel );
 
 #ifdef DAWFILTER_USEPYTHON
-			static void register_python(std::string const nameoftype = "filter_dawgs");
+			static void register_python( std::string const nameoftype = "filter_dawgs" );
 #endif
 		};
 	}

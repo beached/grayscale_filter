@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 
 #pragma once
 
@@ -43,7 +44,7 @@ namespace daw {
 	namespace imaging {
 		template<class T>
 		struct GenericImage {
-			using pos_t = unsigned int;
+			using pos_t = uint32_t;
 		private:
 			pos_t m_width;
 			pos_t m_height;
@@ -90,8 +91,8 @@ namespace daw {
 #ifdef DAWFILTER_USEPYTHON
 			static void register_python( std::string const & nameoftype ) {
 				boost::python::class_<GenericImage>( nameoftype.c_str( ), boost::python::init<const GenericImage::pos_t, const GenericImage::pos_t>( ) )
-					.def( "fromFile", &GenericImage::fromFile ).staticmethod( "fromFile" )
-					.def( "toFile", &GenericImage::toFile ).staticmethod( "toFile" )
+					.def( "fromFile", &GenericImage::fromFile ).static method( "fromFile" )
+					.def( "toFile", &GenericImage::toFile ).static method( "toFile" )
 					.add_property( "size", &GenericImage::size )
 					.add_property( "width", &GenericImage::width )
 					.add_property( "height", &GenericImage::height )
@@ -103,7 +104,7 @@ namespace daw {
 		template<>
 		class GenericImage<rgb3> {
 		public:
-			using pos_t = unsigned int;
+			using pos_t = uint32_t;
 		private:
 			pos_t m_width;
 			pos_t m_height;

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 
 #pragma once
 
@@ -60,7 +61,7 @@ namespace daw {
 
 			template<class T>
 			float too_gs_small( T red, T green, T blue ) {
-				return 0.299f*static_cast<float>(red) + 0.587f*static_cast<float>(green) + 0.114f*static_cast<float>(blue);
+				return 0.299f*static_cast<float>( red ) + 0.587f*static_cast<float>( green ) + 0.114f*static_cast<float>( blue );
 			}
 		}	// namespace helpers
 	}	// namespace imaging

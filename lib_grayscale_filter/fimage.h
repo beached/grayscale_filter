@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
 
 #pragma once
 
@@ -43,9 +44,9 @@ namespace daw {
 			void close( );
 			FIBITMAP * ptr( );
 			FIBITMAP const * ptr( ) const;
-			unsigned int height( ) const;
-			unsigned int width( ) const;
-			unsigned int bpp( ) const;
+			uint32_t height( ) const;
+			uint32_t width( ) const;
+			uint32_t bpp( ) const;
 		};
 	}
 }

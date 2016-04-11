@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2014-2016 Darrell Wright
+// Copyright (c) 2016 Darrell Wright
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files( the "Software" ), to deal
@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
 #include "filterrotate.h"
 #include "genericimage.h"
 #include "genericrgb.h"
@@ -31,7 +32,7 @@
 
 namespace daw {
 	namespace imaging {
-		GenericImage<rgb3> FilterRotate::filter( GenericImage<rgb3> const &image_input, unsigned int const angle ) {
+		GenericImage<rgb3> FilterRotate::filter( GenericImage<rgb3> const &image_input, uint32_t const angle ) {
 			typedef GenericImage<rgb3>::pos_t pos_t;
 
 			if( angle > 3 ) {
@@ -44,7 +45,7 @@ namespace daw {
 				pos_t const maxy = image_input.height( ) - 1;
 
 #pragma omp parallel for
-				for( int y = 0; y < (int)image_input.height( ); ++y ) {
+				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
 						image_rotated( x, maxy - y ) = image_input( y, x );
 					}
@@ -57,9 +58,9 @@ namespace daw {
 				pos_t const maxx = image_input.width( ) - 1;
 				pos_t const maxy = image_input.height( ) - 1;
 #pragma omp parallel for
-				for( int y = 0; y < (int)image_input.height( ); ++y ) {
+				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
-						image_rotated( maxy - (pos_t)y, maxx - x ) = image_input( y, x );
+						image_rotated( maxy - ( pos_t )y, maxx - x ) = image_input( y, x );
 					}
 				}
 				return image_rotated;
@@ -69,7 +70,7 @@ namespace daw {
 				GenericImage<rgb3> image_rotated( image_input.height( ), image_input.width( ) );
 				pos_t const maxx = image_input.width( ) - 1;
 #pragma omp parallel for
-				for( int y = 0; y < (int)image_input.height( ); ++y ) {
+				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
 						image_rotated( maxx - x, y ) = image_input( y, x );
 					}
@@ -81,7 +82,7 @@ namespace daw {
 				std::cerr << "Rotate Filter called without a rotation.  Returning copied original image" << std::endl;
 				GenericImage<rgb3> image_rotated( image_input.height( ), image_input.width( ) );
 #pragma omp parallel for
-				for( int y = 0; y < (int)image_input.height( ); ++y ) {
+				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
 						image_rotated( y, x ) = image_input( y, x );
 					}
