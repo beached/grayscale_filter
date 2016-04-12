@@ -24,6 +24,7 @@
 #include "genericimage.h"
 #include "genericrgb.h"
 #include "helpers.h"
+#include "daw_algorithm.h"
 
 #include <boost/math/special_functions/round.hpp>
 #include <cassert>
@@ -51,7 +52,7 @@ namespace daw {
 				return t1;
 			}
 
-			GenericRGB<int> repaint_methods( rgb3 const orig, uint8_t const grayscale,int32_t const repaint_formula ) {
+			GenericRGB<int32_t> repaint_methods( rgb3 const orig, uint8_t const grayscale,int32_t const repaint_formula ) {
 				switch( repaint_formula ) {
 				case 0:
 				{	// Ratio
@@ -65,13 +66,13 @@ namespace daw {
 
 					if( abs( curL ) < 0.114f ) {
 						//prevent div by 0 as 0.114 is the minimum value;
-						return GenericRGB<int>( 0, 0, 0 );
+						return GenericRGB<int32_t>( 0, 0, 0 );
 					}
 					auto const rat = static_cast<float>( grayscale ) / curL;
 					forig.red = boost::math::round( forig.red*rat );
 					forig.green = boost::math::round( forig.green*rat );
 					forig.blue = boost::math::round( forig.blue*rat );
-					return GenericRGB<int>( static_cast<int32_t>( forig.red ), static_cast<int32_t>( forig.green ), static_cast<int32_t>( forig.blue ) );
+					return GenericRGB<int32_t>( static_cast<int32_t>( forig.red ), static_cast<int32_t>( forig.green ), static_cast<int32_t>( forig.blue ) );
 				}
 				break;
 				case 1:
@@ -86,14 +87,14 @@ namespace daw {
 					auto const G = static_cast<int32_t>( Y - 0.395f*U - 0.581f*V );
 					auto const B = static_cast<int32_t>( Y + 2.032f*U );
 					//int B = (int32_t)( Y + 1.5f*U );
-					return GenericRGB<int>( R, G, B );
+					return GenericRGB<int32_t>( R, G, B );
 				}
 				break;
 				case 2: // Mul 1
-					return GenericRGB<int>( orig.red*grayscale, orig.green*grayscale, orig.blue*grayscale );
+					return GenericRGB<int32_t>( orig.red*grayscale, orig.green*grayscale, orig.blue*grayscale );
 					break;
 				case 3: // Add
-					return GenericRGB<int>( orig.red + grayscale, orig.green + grayscale, orig.blue + grayscale );
+					return GenericRGB<int32_t>( orig.red + grayscale, orig.green + grayscale, orig.blue + grayscale );
 					break;
 				case 4:
 				{	// Mul 2, Mul with individual scaling based on max( R, G, B )
@@ -103,9 +104,9 @@ namespace daw {
 						auto red = static_cast<int32_t>( ( static_cast<float>( orig.red )*luma ) / maxval );
 						auto green = static_cast<int32_t>( ( static_cast<float>( orig.green )*luma ) / maxval );
 						auto blue = static_cast<int32_t>( ( static_cast<float>( orig.blue )*luma ) / maxval );
-						return GenericRGB<int>( std::move( red ), std::move( green ), std::move( blue ) );
+						return GenericRGB<int32_t>( std::move( red ), std::move( green ), std::move( blue ) );
 					} else {
-						return GenericRGB<int>( 0, 0, 0 );
+						return GenericRGB<int32_t>( 0, 0, 0 );
 					}
 				}
 				break;
@@ -118,9 +119,9 @@ namespace daw {
 					auto const orig_min = orig.min( );
 
 					if( 0 == grayscale ) {
-						return GenericRGB<int>( 0, 0, 0 );
+						return GenericRGB<int32_t>( 0, 0, 0 );
 					} else if( orig_max == orig_min ) {
-						return GenericRGB<int>( (int32_t)grayscale );
+						return GenericRGB<int32_t>( (int32_t)grayscale );
 					} else {
 						{
 							auto const orig_maxf = static_cast<float>( orig_max ) / 255.0f;
@@ -165,7 +166,7 @@ namespace daw {
 
 						rgb.mul( 255.0f );
 
-						return GenericRGB<int>( static_cast<int32_t>( rgb.red ), static_cast<int32_t>( rgb.green ), static_cast<int32_t>( rgb.blue ) );
+						return GenericRGB<int32_t>( static_cast<int32_t>( rgb.red ), static_cast<int32_t>( rgb.green ), static_cast<int32_t>( rgb.blue ) );
 					}
 
 				}
@@ -186,8 +187,8 @@ namespace daw {
 				
 				// Do not parallelize without accounting for shared data
 				for( auto const & rgb : img ) {
-					GenericRGB<T>::min( rgb, result.first );
-					GenericRGB<T>::max( rgb, result.second );
+					min( rgb, result.first );
+					max( rgb, result.second );
 				}
 				return result;
 			}
@@ -206,30 +207,31 @@ namespace daw {
 			}
 			// Valid data checks - End
 
-			GenericImage<GenericRGB<int> > tmpimgdata( input_image.width( ), input_image.height( ) );
+			GenericImage<GenericRGB<int32_t>> tmpimgdata( input_image.width( ), input_image.height( ) );
 
-#pragma omp parallel for
-			for( int32_t n = 0; n < (int32_t)input_image.size( ); ++n ) {
-				tmpimgdata[n] = repaint_methods( input_image[n], input_gsimage[n].blue, repaint_formula );
-			}
+//#pragma omp parallel for
+			daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), tmpimgdata.begin( ), [repaint_formula]( auto const & v1, auto const & v2 ) {
+				return repaint_methods( v1, v2.blue, repaint_formula );
+			} );
 
-			GenericRGB<int> pd_min;
-			GenericRGB<int> pd_max;
+			GenericRGB<int32_t> pd_min;
+			GenericRGB<int32_t> pd_max;
 			std::tie( pd_min, pd_max ) = minmax_element( tmpimgdata );
 
 			auto const mul_fact = 255.0f / static_cast<float>( pd_max.max( ) - pd_min.min( ) );
 
 			GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
-
-#pragma omp parallel for
-			for( int32_t n = 0; n < static_cast<int32_t>( input_image.size( ) ); ++n ) {
-				GenericRGB<int> cur_value;
-				cur_value.red = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].red - pd_min.red )*mul_fact );
-				cur_value.green = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].green - pd_min.green )*mul_fact );
-				cur_value.blue = static_cast<int32_t>( static_cast<float>( tmpimgdata[n].blue - pd_min.blue )*mul_fact );
+//#pragma omp parallel for
+			std::transform( tmpimgdata.begin( ), tmpimgdata.end( ), output_image.begin( ), [&]( auto const & rgb ) {
+				GenericRGB<uint32_t> cur_value;
+				
+				cur_value.red = static_cast<int32_t>(static_cast<float>(rgb.red - pd_min.red)*mul_fact);
+				cur_value.green = static_cast<int32_t>(static_cast<float>(rgb.green - pd_min.green)*mul_fact);
+				cur_value.blue = static_cast<int32_t>(static_cast<float>(rgb.blue - pd_min.blue)*mul_fact);
 				cur_value.clampvalue( 0, 255 );
-				output_image[n] = rgb3( static_cast<uint8_t>( cur_value.red ), static_cast<uint8_t>( cur_value.green ), static_cast<uint8_t>( cur_value.blue ) );
-			}
+				return rgb3( static_cast<uint8_t>(cur_value.red), static_cast<uint8_t>(cur_value.green), static_cast<uint8_t>(cur_value.blue) );
+			} );
+
 			return output_image;
 		}
 

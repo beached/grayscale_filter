@@ -84,6 +84,7 @@ namespace daw {
 				std::cerr << "Already a grayscale image or has enough room for all possible values and no compression needed:" << valuepos.size( ) << std::endl;
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
+				assert( image_input.size( ) <= image_output.size( ) );
 				// TODO: make parallel
 				std::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
 					return static_cast<uint8_t>(rgb.too_float_gs( ));

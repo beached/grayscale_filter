@@ -97,30 +97,6 @@ namespace daw {
 				}
 			}
 
-			static void min( const GenericRGB &value, GenericRGB &cur_min ) {
-				if( value.red < cur_min.red ) {
-					cur_min.red = value.red;
-				}
-				if( value.green < cur_min.green ) {
-					cur_min.green = value.green;
-				}
-				if( value.blue < cur_min.blue ) {
-					cur_min.blue = value.blue;
-				}
-			}
-
-			static void max( const GenericRGB &value, GenericRGB &cur_max ) {
-				if( value.red > cur_max.red ) {
-					cur_max.red = value.red;
-				}
-				if( value.green > cur_max.green ) {
-					cur_max.green = value.green;
-				}
-				if( value.blue > cur_max.blue ) {
-					cur_max.blue = value.blue;
-				}
-			}
-
 			T min( ) const {
 				T ret = red;
 				if( green < ret ) {
@@ -169,7 +145,34 @@ namespace daw {
 			}
 #endif
 		};
-	}
-}
+		
+		template<typename L, typename R>
+		void min( const GenericRGB<L> &value, GenericRGB<R> &cur_min ) {
+			if( value.red < cur_min.red ) {
+				cur_min.red = value.red;
+			}
+			if( value.green < cur_min.green ) {
+				cur_min.green = value.green;
+			}
+			if( value.blue < cur_min.blue ) {
+				cur_min.blue = value.blue;
+			}
+		}
+
+		template<typename L, typename R>
+		void max( const GenericRGB<L> &value, GenericRGB<R> &cur_max ) {
+			if( value.red > cur_max.red ) {
+				cur_max.red = value.red;
+			}
+			if( value.green > cur_max.green ) {
+				cur_max.green = value.green;
+			}
+			if( value.blue > cur_max.blue ) {
+				cur_max.blue = value.blue;
+			}
+		}
+	}	// namespace imaging
+}	// namespace daw
 
 using rgb3 = daw::imaging::GenericRGB<uint8_t>;
+

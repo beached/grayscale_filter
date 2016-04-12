@@ -46,11 +46,25 @@ nullptr.h
 random.cpp
 random.h
 )
+
+include(ExternalProject)
+ExternalProject_Add( 
+	header_libraries
+	GIT_REPOSITORY "https://github.com/beached/header_libraries.git"
+	SOURCE_DIR "${CMAKE_BINARY_DIR}/3rdparty/header_libraries"
+	GIT_TAG "master"
+	PATCH_COMMAND ""
+	INSTALL_COMMAND ""
+	TEST_COMMAND ""
+)
+
+include_directories( SYSTEM "${CMAKE_BINARY_DIR}/3rdparty/header_libraries" )
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 include_directories( SYSTEM ${FREEIMAGE_INCLUDE_DIRS} )
 link_directories( ${FREEIMAGE_LIBRARIES} )
 
 add_library( lib_grayscale_filter STATIC ${SOURCE_FILES} )
 target_link_libraries( lib_grayscale_filter ${Boost_Libraries} freeimage )
+add_dependencies( lib_grayscale_filter header_libraries )
 
 

@@ -46,7 +46,7 @@ namespace daw {
 		template<class T>
 		struct GenericImage {
 			using pos_t = uint32_t;
-			using value_type = GenericRGB<T>;
+			using value_type = T;
 			using values_type = boost::shared_array<value_type>;
 			using iterator = value_type *;
 			using const_iterator = value_type const *;			
