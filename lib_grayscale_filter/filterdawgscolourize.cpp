@@ -176,6 +176,22 @@ namespace daw {
 					break;
 				}
 			}
+
+			template<typename T>
+			std::pair<GenericRGB<T>, GenericRGB<T>> minmax_element( GenericImage<GenericRGB<T>> const & img ) {
+				std::pair<GenericRGB<T>, GenericRGB<T>> result { 
+					{ std::numeric_limits<T>::max( ), std::numeric_limits<T>::max( ), std::numeric_limits<T>::max( ) },
+					{ std::numeric_limits<T>::min( ), std::numeric_limits<T>::min( ), std::numeric_limits<T>::min( ) }
+				};
+				
+				// Do not parallelize without accounting for shared data
+				for( auto const & rgb : img ) {
+					GenericRGB<T>::min( rgb, result.first );
+					GenericRGB<T>::max( rgb, result.second );
+				}
+				return result;
+			}
+
 		}	// namespace anonymous
 
 		GenericImage<rgb3> FilterDAWGSColourize::filter( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula ) {
@@ -197,17 +213,11 @@ namespace daw {
 				tmpimgdata[n] = repaint_methods( input_image[n], input_gsimage[n].blue, repaint_formula );
 			}
 
-			GenericRGB<int> pd_min( std::numeric_limits<uint32_t>::max( ), std::numeric_limits<uint32_t>::max( ), std::numeric_limits<uint32_t>::max( ) );
-			GenericRGB<int> pd_max( std::numeric_limits<uint32_t>::min( ), std::numeric_limits<uint32_t>::min( ), std::numeric_limits<uint32_t>::min( ) );
+			GenericRGB<int> pd_min;
+			GenericRGB<int> pd_max;
+			std::tie( pd_min, pd_max ) = minmax_element( tmpimgdata );
 
-			// Do not parallelize without accounting for shared data
-			for( uint32_t n = 0; n < tmpimgdata.size( ); ++n ) {
-				const GenericRGB<int> curval = tmpimgdata[n];
-				GenericRGB<int>::min( curval, pd_min );
-				GenericRGB<int>::max( curval, pd_max );
-			}
-
-			float const mul_fact = 255.0f / static_cast<float>( pd_max.max( ) - pd_min.min( ) );
+			auto const mul_fact = 255.0f / static_cast<float>( pd_max.max( ) - pd_min.min( ) );
 
 			GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
 

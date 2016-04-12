@@ -46,6 +46,12 @@ namespace daw {
 		template<class T>
 		struct GenericImage {
 			using pos_t = uint32_t;
+			using value_type = GenericRGB<T>;
+			using values_type = boost::shared_array<value_type>;
+			using iterator = value_type *;
+			using const_iterator = value_type const *;			
+			using reference = value_type &;
+			using const_reference = value_type const &;
 		private:
 			pos_t m_width;
 			pos_t m_height;
@@ -73,20 +79,35 @@ namespace daw {
 				return m_id;
 			}
 
-			T const & operator( )( pos_t const row, pos_t const col ) const {
+			const_reference operator( )( pos_t const row, pos_t const col ) const {
 				return m_image_data[row*m_width + col];
 			}
 
-			T & operator( )( pos_t const row, pos_t const col ) {
+			reference operator( )( pos_t const row, pos_t const col ) {
 				return m_image_data[row*m_width + col];
 			}
 
-			T const & operator[]( size_t const pos ) const {
+			const_reference operator[]( size_t const pos ) const {
 				return m_image_data[pos];
 			}
 
-			T & operator[]( size_t const pos ) {
+			reference operator[]( size_t const pos ) {
 				return m_image_data[pos];
+			}
+
+			iterator begin( ) {
+				return m_image_data.get( );
+			}
+
+			const_iterator begin( ) const {
+				return m_image_data.get( );
+			}
+
+			iterator end( ) {
+				return m_image_data.get( ) + m_size;
+			}
+			const_iterator end( ) const {
+				return m_image_data.get( ) + m_size;
 			}
 
 #ifdef DAWFILTER_USEPYTHON
@@ -106,12 +127,12 @@ namespace daw {
 		class GenericImage<rgb3> {
 		public:
 			using pos_t = uint32_t;
-			using values_type = boost::shared_array<rgb3>;
-			using iterator = rgb3 *;
-			using const_iterator = rgb3 const *;
 			using value_type = rgb3;
-			using reference = rgb3 &;
-			using const_reference = rgb3 const &;
+			using values_type = boost::shared_array<value_type>;
+			using iterator = value_type *;
+			using const_iterator = value_type const *;
+			using reference = value_type &;
+			using const_reference = value_type const &;
 		private:
 			pos_t m_width;
 			pos_t m_height;
