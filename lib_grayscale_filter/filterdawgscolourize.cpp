@@ -54,7 +54,7 @@ namespace daw {
 
 			auto repaint_ratio( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// Luma = Rx + Gy +Bz
@@ -80,7 +80,7 @@ namespace daw {
 
 			auto repaint_yuv( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// YUV
@@ -101,7 +101,7 @@ namespace daw {
 
 			auto repaint_multiply_1( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					return GenericRGB<int32_t>( orig.red*grayscale, orig.green*grayscale, orig.blue*grayscale );
@@ -111,7 +111,7 @@ namespace daw {
 
 			auto repaint_addition( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					return GenericRGB<int32_t>( orig.red + grayscale, orig.green + grayscale, orig.blue + grayscale );
@@ -121,7 +121,7 @@ namespace daw {
 
 			auto repaint_multiply_2( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// Mul 2, Mul with individual scaling based on max( R, G, B )
@@ -140,7 +140,7 @@ namespace daw {
 
 			auto repaint_hsl( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
-				GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
+				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
 				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// HSL
@@ -205,7 +205,7 @@ namespace daw {
 			}
 
 			auto repaint_image( FilterDAWGSColourize::repaint_formulas const repaint_formula, GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & inputgs_image ) {
-				static std::unordered_map<FilterDAWGSColourize::repaint_formulas, std::function<GenericImage<rgb3>( GenericImage<rgb3> const &, GenericImage<rgb3> const & )>> repaint_fn = {
+				static std::unordered_map<FilterDAWGSColourize::repaint_formulas, std::function<GenericImage<GenericRGB<int32_t>>( GenericImage<rgb3> const &, GenericImage<rgb3> const & )>> repaint_fn = {
 					{ FilterDAWGSColourize::repaint_formulas::Addition, repaint_addition },
 					{ FilterDAWGSColourize::repaint_formulas::HSL, repaint_hsl },
 					{ FilterDAWGSColourize::repaint_formulas::Multiply_1, repaint_multiply_1 },
