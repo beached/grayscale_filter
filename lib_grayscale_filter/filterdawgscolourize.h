@@ -34,16 +34,16 @@
 
 namespace daw {
 	namespace imaging {
-		class FilterDAWGSColourize {
-		public:
-			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula = 0 );
+		struct FilterDAWGSColourize {
+			enum class repaint_formulas { Ratio, YUV, Multiply_1, Addition, Multiply_2, HSL };
 
-			static std::unordered_map<std::string, int32_t> get_repaint_formulas();
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, FilterDAWGSColourize::repaint_formulas const repaint_formula = FilterDAWGSColourize::repaint_formulas::Ratio );
+
+			static std::unordered_map<std::string, repaint_formulas> get_repaint_formulas();
 
 #ifdef DAWFILTER_USEPYTHON
 			static void register_python( );
 #endif
-		};
-	}
-}
-
+		};	// struct FilterDAWGSColourize
+	}	// namespace imaging
+}	// namespace daw

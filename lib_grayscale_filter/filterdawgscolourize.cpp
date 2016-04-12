@@ -52,9 +52,9 @@ namespace daw {
 				return t1;
 			}
 
-			GenericRGB<int32_t> repaint_methods( rgb3 const orig, uint8_t const grayscale,int32_t const repaint_formula ) {
+			GenericRGB<int32_t> repaint_methods( rgb3 const orig, uint8_t const grayscale, FilterDAWGSColourize::repaint_formulas const repaint_formula ) {
 				switch( repaint_formula ) {
-				case 0:
+				case FilterDAWGSColourize::repaint_formulas::Ratio:
 				{	// Ratio
 					// Luma = Rx + Gy +Bz
 					// We want Luma -> Luma2 
@@ -75,7 +75,7 @@ namespace daw {
 					return GenericRGB<int32_t>( static_cast<int32_t>( forig.red ), static_cast<int32_t>( forig.green ), static_cast<int32_t>( forig.blue ) );
 				}
 				break;
-				case 1:
+				case FilterDAWGSColourize::repaint_formulas::YUV:
 				{	// YUV
 					// Convert back to YUV with Y being the current grayscale value and then back to RGB
 					//int32_t const retval = 19595*pixel.red + 38469*pixel.green + 7471*pixel.blue;
@@ -90,13 +90,13 @@ namespace daw {
 					return GenericRGB<int32_t>( R, G, B );
 				}
 				break;
-				case 2: // Mul 1
+				case FilterDAWGSColourize::repaint_formulas::Multiply_1:
 					return GenericRGB<int32_t>( orig.red*grayscale, orig.green*grayscale, orig.blue*grayscale );
 					break;
-				case 3: // Add
+				case FilterDAWGSColourize::repaint_formulas::Addition:
 					return GenericRGB<int32_t>( orig.red + grayscale, orig.green + grayscale, orig.blue + grayscale );
 					break;
-				case 4:
+				case FilterDAWGSColourize::repaint_formulas::Multiply_2:
 				{	// Mul 2, Mul with individual scaling based on max( R, G, B )
 					auto const maxval = static_cast<float>(orig.max( ));
 					if( maxval > 0 ) {
@@ -110,7 +110,7 @@ namespace daw {
 					}
 				}
 				break;
-				case 5:
+				case FilterDAWGSColourize::repaint_formulas::HSL:
 				{	// HSL
 					auto luma = static_cast<float>( grayscale ) / 255.0f;
 					auto hue = 0.0f;
@@ -193,7 +193,7 @@ namespace daw {
 
 		}	// namespace anonymous
 
-		GenericImage<rgb3> FilterDAWGSColourize::filter( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula ) {
+		GenericImage<rgb3> FilterDAWGSColourize::filter( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage, FilterDAWGSColourize::repaint_formulas repaint_formula ) {
 			// Valid data checks - Start
 			if( input_image.width( ) != input_gsimage.width( ) ) {
 				auto const msg = "FilterDAWGSColourize::runfilter with input_image->width != _input_gsimage->width";
@@ -233,8 +233,8 @@ namespace daw {
 			return output_image;
 		}
 
-		std::unordered_map<std::string, int32_t> FilterDAWGSColourize::get_repaint_formulas( ) {
-			static std::unordered_map<std::string, int32_t> ret = { { "Ratio", 0 }, { "YUV", 1 }, { "Multiply 1", 2 }, { "Addition", 3 }, { "Multiply 2", 4 }, { "HSL", 5 } };
+		std::unordered_map<std::string, FilterDAWGSColourize::repaint_formulas> FilterDAWGSColourize::get_repaint_formulas( ) {
+			static std::unordered_map<std::string, repaint_formulas> ret = { { "Ratio", repaint_formulas::Ratio }, { "YUV", repaint_formulas::YUV }, { "Multiply 1", repaint_formulas::Multiply_1 }, { "Addition", repaint_formulas::Addition }, { "Multiply 2", repaint_formulas::Multiply_2 }, { "HSL", repaint_formulas::HSL } };
 			return ret;
 		}
 
