@@ -141,8 +141,8 @@ namespace daw {
 			values_type m_image_data;
 		public:
 			GenericImage( pos_t const width, pos_t const height );
-			static void to_file( std::string const& image_filename, GenericImage<rgb3> const& image_input );
-			void to_file( std::string const & image_filename ) const;
+			static void to_file( boost::string_ref image_filename, GenericImage<rgb3> const& image_input );
+			void to_file( boost::string_ref image_filename ) const;
 			static GenericImage<rgb3> from_file( boost::string_ref image_filename );
 			pos_t width( ) const;
 			pos_t height( ) const;

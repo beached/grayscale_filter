@@ -30,7 +30,7 @@ namespace daw {
 			nullcheck( m_image_data.get( ), "Error creating GenericImage" );
 		}
 
-		void GenericImage<rgb3>::to_file( std::string const& image_filename, GenericImage<rgb3> const& image_input ) {
+		void GenericImage<rgb3>::to_file( boost::string_ref image_filename, GenericImage<rgb3> const& image_input ) {
 			try {
 				typedef GenericImage<rgb3>::pos_t pos_t;
 				FreeImage image_output( FreeImage_Allocate( static_cast<int32_t>(image_input.width( )), static_cast<int32_t>(image_input.height( )), 24 ) );
@@ -45,27 +45,26 @@ namespace daw {
 							rgb_out.rgbGreen = rgb_in.green;
 							rgb_out.rgbRed = rgb_in.red;
 							if( !FreeImage_SetPixelColor( image_output.ptr( ), static_cast<uint32_t>( x ), static_cast<uint32_t>( maxy - y ), &rgb_out ) ) {
-								std::string const msg = "Error setting pixel data";
-								throw std::runtime_error( msg );
+								throw std::runtime_error( "Error setting pixel data" );
 							}
 						}
 					}
 				}
-				FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename( image_filename.c_str( ) );
-				if( !FreeImage_Save( fif, image_output.ptr( ), image_filename.c_str( ) ) ) {
-					std::string const msg = "Error Saving image to file '" + image_filename + "'";
+				FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename( image_filename.data( ) );
+				if( !FreeImage_Save( fif, image_output.ptr( ), image_filename.data( ) ) ) {
+					std::string const msg = "Error Saving image to file '" + image_filename.to_string( ) + "'";
 					throw std::runtime_error( msg );
 				}
 				image_output.close( );
 			} catch( std::runtime_error const & ) {
 				throw;
 			} catch( ... ) {
-				std::string const msg = "An unknown exception has been thrown while saving image to file '" + image_filename + "'";
+				std::string const msg = "An unknown exception has been thrown while saving image to file '" + image_filename.to_string() + "'";
 				throw std::runtime_error( msg );
 			}
 		}
 
-		void GenericImage<rgb3>::to_file( std::string const& image_filename ) const { 
+		void GenericImage<rgb3>::to_file( boost::string_ref image_filename ) const { 
 			GenericImage<rgb3>::to_file( image_filename, *this );
 		}
 

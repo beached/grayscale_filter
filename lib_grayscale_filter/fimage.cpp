@@ -29,12 +29,20 @@ namespace daw {
 			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
 		}
 
-		FreeImage::FreeImage( FIBITMAP * bitmap, std::string const & errmsg ): m_bitmap( bitmap ) {
+		FreeImage::FreeImage( FIBITMAP * bitmap, boost::string_ref errmsg ): m_bitmap( bitmap ) {
 			nullcheck( m_bitmap, errmsg );
 		}
 
 		FreeImage::FreeImage( FreeImage const & other ): m_bitmap( FreeImage_Clone( other.m_bitmap ) ) {
 			nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
+		}
+
+		FreeImage& FreeImage::operator=( FreeImage const & rhs ) {
+			if( this != &rhs ) {
+				nullcheck( m_bitmap, "Error while loading FreeImage bitmap" );
+				m_bitmap = FreeImage_Clone( rhs.m_bitmap );
+			}
+			return *this;
 		}
 
 		FreeImage & FreeImage::take( FreeImage & other ) {
@@ -69,20 +77,20 @@ namespace daw {
 			return m_bitmap;
 		}
 
-		unsigned FreeImage::height( ) const {
+		FreeImage::pos_t FreeImage::height( ) const {
 			return FreeImage_GetHeight( m_bitmap );
 		}
 
-		unsigned FreeImage::width( ) const {
+		FreeImage::pos_t FreeImage::width( ) const {
 			return FreeImage_GetWidth( m_bitmap );
 		}
 
-		unsigned FreeImage::bpp( ) const {
+		FreeImage::bpp_t FreeImage::bpp( ) const {
 			return FreeImage_GetBPP( m_bitmap );
 		}
 
 		FreeImage::~FreeImage( ) {
-			close( );
+			this->close( );
 		}
 	}	// namespace imaging
 }	// namespace daw

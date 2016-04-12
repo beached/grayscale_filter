@@ -25,14 +25,14 @@
 
 #include <iostream>
 #include <stdexcept>
-#include <string>
+#include <boost/utility/string_ref.hpp>
 
 
 template<class T>
-void nullcheck( T const * const ptr, std::string const & msg ) {
+void nullcheck( T const * const ptr, boost::string_ref msg ) {
 	if( nullptr == ptr ) {
-		std::cerr << msg << std::endl;
-		throw std::runtime_error( msg );
+		std::cerr << msg.data( ) << std::endl;
+		throw std::runtime_error( msg.data( ) );
 	}
 }
 

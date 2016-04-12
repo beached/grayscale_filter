@@ -26,27 +26,36 @@
 #include "nullptr.h"
 
 #include <FreeImage.h>
-#include <string>
+
+#include <boost/utility/string_ref.hpp>
 
 namespace daw {
 	namespace imaging {
-		class FreeImage {
+		class FreeImage final {
 			FIBITMAP * m_bitmap;
 
 		public:
+			using pos_t = decltype(FreeImage_GetWidth( m_bitmap ));
+			using bpp_t = decltype(FreeImage_GetBPP( m_bitmap ));
+			FreeImage( ) = delete;
 			FreeImage( FIBITMAP * bitmap );
-			FreeImage( FIBITMAP * bitmap, std::string const & errmsg );
-			FreeImage( FreeImage const & other );
+			FreeImage( FIBITMAP * bitmap, boost::string_ref errmsg );			
 			~FreeImage( );
+			FreeImage( FreeImage const & other );
+			FreeImage & operator=( FreeImage const & rhs );
+			FreeImage( FreeImage && ) = default;
+			FreeImage & operator=( FreeImage && ) = default;
 
 			FreeImage & take( FreeImage & other );
 			FreeImage & take( FIBITMAP * bitmap );
 			void close( );
+			
 			FIBITMAP * ptr( );
 			FIBITMAP const * ptr( ) const;
-			uint32_t height( ) const;
-			uint32_t width( ) const;
-			uint32_t bpp( ) const;
+			
+			pos_t height( ) const;
+			pos_t width( ) const;
+			bpp_t bpp( ) const;
 		};
 	}
 }
