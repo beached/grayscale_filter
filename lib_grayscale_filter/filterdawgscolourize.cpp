@@ -78,7 +78,7 @@ namespace daw {
 				case 1:
 				{	// YUV
 					// Convert back to YUV with Y being the current grayscale value and then back to RGB
-					//int const retval = 19595*pixel.red + 38469*pixel.green + 7471*pixel.blue;
+					//int32_t const retval = 19595*pixel.red + 38469*pixel.green + 7471*pixel.blue;
 					auto const Y = static_cast<float>( grayscale );
 					auto const U = orig.colform( -0.147f, -0.289f, 0.436f );
 					auto const V = orig.colform( 0.615f, -0.515f, -0.1f );
@@ -98,7 +98,7 @@ namespace daw {
 					break;
 				case 4:
 				{	// Mul 2, Mul with individual scaling based on max( R, G, B )
-					int const maxval = orig.max( );
+					auto const maxval = static_cast<float>(orig.max( ));
 					if( maxval > 0 ) {
 						auto const luma = static_cast<float>( grayscale );
 						auto red = static_cast<int32_t>( ( static_cast<float>( orig.red )*luma ) / maxval );
@@ -121,7 +121,7 @@ namespace daw {
 					if( 0 == grayscale ) {
 						return GenericRGB<int32_t>( 0, 0, 0 );
 					} else if( orig_max == orig_min ) {
-						return GenericRGB<int32_t>( (int32_t)grayscale );
+						return GenericRGB<int32_t>( static_cast<int32_t>(grayscale) );
 					} else {
 						{
 							auto const orig_maxf = static_cast<float>( orig_max ) / 255.0f;
@@ -172,9 +172,7 @@ namespace daw {
 				}
 				break;
 				default:
-					std::string const msg = "Invalid repaint formula";
-					throw std::runtime_error( msg );
-					break;
+					throw std::runtime_error( "Invalid repaint formula" );
 				}
 			}
 
@@ -198,11 +196,11 @@ namespace daw {
 		GenericImage<rgb3> FilterDAWGSColourize::filter( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula ) {
 			// Valid data checks - Start
 			if( input_image.width( ) != input_gsimage.width( ) ) {
-				std::string const msg = "FilterDAWGSColourize::runfilter with input_image->width != _input_gsimage->width";
+				auto const msg = "FilterDAWGSColourize::runfilter with input_image->width != _input_gsimage->width";
 				throw std::runtime_error( msg );
 			}
 			if( input_image.height( ) != input_gsimage.height( ) ) {
-				std::string const msg = "FilterDAWGSColourize::runfilter with input_image->height != _input_gsimage->height";
+				auto const msg = "FilterDAWGSColourize::runfilter with input_image->height != _input_gsimage->height";
 				throw std::runtime_error( msg );
 			}
 			// Valid data checks - End
@@ -233,6 +231,11 @@ namespace daw {
 			} );
 
 			return output_image;
+		}
+
+		std::unordered_map<std::string, int32_t> FilterDAWGSColourize::get_repaint_formulas( ) {
+			static std::unordered_map<std::string, int32_t> ret = { { "Ratio", 0 }, { "YUV", 1 }, { "Multiply 1", 2 }, { "Addition", 3 }, { "Multiply 2", 4 }, { "HSL", 5 } };
+			return ret;
 		}
 
 #ifdef DAWFILTER_USEPYTHON

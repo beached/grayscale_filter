@@ -38,19 +38,7 @@ namespace daw {
 		public:
 			static GenericImage<rgb3> filter( GenericImage<rgb3> const &input_image, GenericImage<rgb3> const & input_gsimage, uint32_t const repaint_formula = 0 );
 
-			template<class T>
-			static std::unordered_map<T,int32_t> get_repaint_formulas( ) {
-				std::unordered_map<T,int32_t> ret;
-				int count = 0;
-				ret["Ratio"] = count++;
-				ret["YUV"] = count++;
-				ret["Multiply 1"] = count++;
-				ret["Addition"] = count++;
-				ret["Multiply 2"] = count++;
-				ret["HSL"] = count++;
-
-				return ret;
-			}
+			static std::unordered_map<std::string, int32_t> get_repaint_formulas();
 
 #ifdef DAWFILTER_USEPYTHON
 			static void register_python( );

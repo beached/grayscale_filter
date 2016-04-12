@@ -65,8 +65,7 @@ namespace daw {
 						auto const curkey = static_cast<int32_t>(keys[n]);	// TODO clarify why sign changes
 #ifdef _DEBUG
 						if( curval > 255 ) {
-							std::string const msg = "Position in grayscale is too large and cannot fit into 8 bits";
-							throw std::runtime_error( msg );
+							throw std::runtime_error( "Position in grayscale is too large and cannot fit into 8 bits" );
 						}
 #endif				
 						valuepos[curkey] = curval;
@@ -93,7 +92,7 @@ namespace daw {
 			}
 		}
 
-		int FilterDAWGS::too_gs( rgb3 const & pixel ) {
+		int32_t FilterDAWGS::too_gs( rgb3 const & pixel ) {
 			return 19595 * pixel.red + 38469 * pixel.green + 7471 * pixel.blue;	// 0.299r + 0.587g + 0.114b
 		}
 

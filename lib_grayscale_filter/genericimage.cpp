@@ -35,8 +35,8 @@ namespace daw {
 				typedef GenericImage<rgb3>::pos_t pos_t;
 				FreeImage image_output( FreeImage_Allocate( static_cast<int32_t>(image_input.width( )), static_cast<int32_t>(image_input.height( )), 24 ) );
 				{
-					int const maxy = static_cast<int32_t>(image_input.height( )) - 1;
-#pragma omp parallel for
+					auto const maxy = static_cast<int32_t>(image_input.height( )) - 1;
+//#pragma omp parallel for
 					for( int32_t y = 0; y < static_cast<int32_t>(image_input.height( )); ++y ) {
 						RGBQUAD rgb_out;
 						for( pos_t x = 0; x < image_input.width( ); ++x ) {
@@ -50,16 +50,16 @@ namespace daw {
 						}
 					}
 				}
-				FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename( image_filename.data( ) );
+				auto fif = FreeImage_GetFIFFromFilename( image_filename.data( ) );
 				if( !FreeImage_Save( fif, image_output.ptr( ), image_filename.data( ) ) ) {
-					std::string const msg = "Error Saving image to file '" + image_filename.to_string( ) + "'";
+					auto const msg = "Error Saving image to file '" + image_filename.to_string( ) + "'";
 					throw std::runtime_error( msg );
 				}
 				image_output.close( );
 			} catch( std::runtime_error const & ) {
 				throw;
 			} catch( ... ) {
-				std::string const msg = "An unknown exception has been thrown while saving image to file '" + image_filename.to_string() + "'";
+				auto const msg = "An unknown exception has been thrown while saving image to file '" + image_filename.to_string() + "'";
 				throw std::runtime_error( msg );
 			}
 		}
@@ -74,20 +74,20 @@ namespace daw {
 				{
 					boost::filesystem::path const pImageFile( image_filename.data( ) );
 					if( !boost::filesystem::exists( pImageFile ) ) {
-						std::string const msg = "The file '" + image_filename.to_string( ) + "' cannot be found";
+						auto const msg = "The file '" + image_filename.to_string( ) + "' cannot be found";
 						throw std::runtime_error( msg );
 					} else if( !boost::filesystem::is_regular_file( pImageFile ) ) {
-						std::string const msg = "The file '" + image_filename.to_string( ) + "' is not a regular file";
+						auto const msg = "The file '" + image_filename.to_string( ) + "' is not a regular file";
 						throw std::runtime_error( msg );
 					}
 				}
 
 				// Get Image Format and open the image
-				FREE_IMAGE_FORMAT fif = FreeImage_GetFileType( image_filename.data( ) );
+				auto fif = FreeImage_GetFileType( image_filename.data( ) );
 				if( fif == FIF_UNKNOWN ) {
 					fif = FreeImage_GetFIFFromFilename( image_filename.data( ) );
 					if( fif == FIF_UNKNOWN ) {
-						std::string const msg = "The file '" + image_filename.to_string( ) + "' cannot be opened.  Cannot determine image type";
+						auto const msg = "The file '" + image_filename.to_string( ) + "' cannot be opened.  Cannot determine image type";
 						throw std::runtime_error( msg );
 					}
 				}
@@ -99,7 +99,7 @@ namespace daw {
 					if( nullptr == bitmap_test ) {
 						bitmap_test = FreeImage_ConvertTo32Bits( image_input.ptr( ) );
 						if( nullptr == bitmap_test ) {
-							std::string const msg = "'" + image_filename.to_string( ) + "' is a non RGB8 file.  Files must be RGB8";
+							auto const msg = "'" + image_filename.to_string( ) + "' is a non RGB8 file.  Files must be RGB8";
 							throw std::runtime_error( msg );
 						} else {
 							std::cerr << "Had to convert image to 32bit RGBA" << std::endl;
@@ -112,7 +112,7 @@ namespace daw {
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
 				{
-					int const maxy = static_cast<int32_t>( image_output.height( ) ) - 1;
+					auto const maxy = static_cast<int32_t>( image_output.height( ) ) - 1;
 #pragma omp parallel for
 					for( int32_t y = 0; y < static_cast<int32_t>( image_output.height( ) ); ++y ) {
 						RGBQUAD rgb_in;
@@ -121,7 +121,7 @@ namespace daw {
 								rgb3 const rgb_out( rgb_in.rgbRed, rgb_in.rgbGreen, rgb_in.rgbBlue );
 								image_output( y, x ) = rgb_out;
 							} else {
-								std::string const msg = "Error retrieving pixel data from '" + image_filename.to_string( ) + "'";
+								auto const msg = "Error retrieving pixel data from '" + image_filename.to_string( ) + "'";
 								throw std::runtime_error( msg );
 							}
 						}

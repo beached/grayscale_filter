@@ -44,8 +44,8 @@ namespace daw {
 				GenericImage<rgb3> image_rotated( image_input.height( ), image_input.width( ) );
 				pos_t const maxy = image_input.height( ) - 1;
 
-#pragma omp parallel for
-				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
+//#pragma omp parallel for
+				for( int32_t y = 0; y < static_cast<int32_t>(image_input.height( )); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
 						image_rotated( x, maxy - y ) = image_input( y, x );
 					}
@@ -57,10 +57,10 @@ namespace daw {
 				GenericImage<rgb3> image_rotated( image_input.width( ), image_input.height( ) );
 				pos_t const maxx = image_input.width( ) - 1;
 				pos_t const maxy = image_input.height( ) - 1;
-#pragma omp parallel for
-				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
+//#pragma omp parallel for
+				for( int32_t y = 0; y < static_cast<int32_t>(image_input.height( )); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
-						image_rotated( maxy - ( pos_t )y, maxx - x ) = image_input( y, x );
+						image_rotated( maxy - static_cast<pos_t >(y), maxx - x ) = image_input( y, x );
 					}
 				}
 				return image_rotated;
@@ -68,9 +68,9 @@ namespace daw {
 			case 3:
 			{
 				GenericImage<rgb3> image_rotated( image_input.height( ), image_input.width( ) );
-				pos_t const maxx = image_input.width( ) - 1;
-#pragma omp parallel for
-				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
+				auto const maxx = image_input.width( ) - 1;
+//#pragma omp parallel for
+				for( int32_t y = 0; y < static_cast<int32_t>(image_input.height( )); ++y ) {
 					for( pos_t x = 0; x < image_input.width( ); ++x ) {
 						image_rotated( maxx - x, y ) = image_input( y, x );
 					}
@@ -80,13 +80,9 @@ namespace daw {
 			default:
 			{	// This is here to catch.  You should not use a rotate of 0
 				std::cerr << "Rotate Filter called without a rotation.  Returning copied original image" << std::endl;
+				
 				GenericImage<rgb3> image_rotated( image_input.height( ), image_input.width( ) );
-#pragma omp parallel for
-				for( int32_t y = 0; y < (int32_t)image_input.height( ); ++y ) {
-					for( pos_t x = 0; x < image_input.width( ); ++x ) {
-						image_rotated( y, x ) = image_input( y, x );
-					}
-				}
+				std::copy( image_input.begin( ), image_input.end( ), image_rotated.begin( ) );
 				return image_rotated;
 			}
 			}
