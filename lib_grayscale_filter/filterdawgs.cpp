@@ -24,8 +24,9 @@
 #include "genericimage.h"
 #include "genericrgb.h"
 #include "daw_parallel_algorithm.h"
+#include "daw_array.h"
 #include <boost/scoped_array.hpp>
-#include <boost/unordered/unordered_map.hpp>
+#include <unordered_map>
 #include <iterator>
 #include <map>
 //#include <omp.h>
@@ -37,7 +38,7 @@ namespace daw {
 	namespace imaging {
 		GenericImage<rgb3> FilterDAWGS::filter( GenericImage<rgb3> image_input ) {
 			//no parallel to valuepos
-			typedef boost::unordered_map<int32_t,int32_t> valuepos_t;
+			using valuepos_t = std::unordered_map<int32_t, int32_t>;
 			valuepos_t valuepos;
 
 			//no parallel to valuepos			
@@ -48,28 +49,18 @@ namespace daw {
 			if( valuepos.size( ) > 256 ) {
 				auto const inc = static_cast<float>( valuepos.size( ) ) / 256.0f;
 				{
-					auto const keys_size = valuepos.size( );
-					boost::scoped_array<uint32_t> keys( new uint32_t[keys_size] );
-					{
-						size_t n = 0;
-						for( auto const & val : valuepos ) {
-							keys[n++] = val.first;
-						}
-					}
+					daw::array<int32_t> keys( valuepos.size( ) );
+					daw::algorithm::parallel::transform( valuepos.begin( ), valuepos.end( ), keys.begin( ), []( auto val ) {
+						return val.first;
+					} );
 
-					std::sort( keys.get( ), keys.get( ) + keys_size );
+					std::sort( keys.begin( ), keys.end( ) );
 
-#pragma omp parallel for
-					for( int32_t n = 0; n < static_cast<int32_t>( keys_size ); ++n ) {
-						auto const curval = static_cast<int32_t>( static_cast<float>( n ) / inc );
+					daw::algorithm::parallel::for_each( 0, keys.size( ), [&]( auto n ) {
+						auto const curval = static_cast<int32_t>(static_cast<float>(n) / inc);
 						auto const curkey = static_cast<int32_t>(keys[n]);	// TODO clarify why sign changes
-#ifdef _DEBUG
-						if( curval > 255 ) {
-							throw std::runtime_error( "Position in grayscale is too large and cannot fit into 8 bits" );
-						}
-#endif				
 						valuepos[curkey] = curval;
-					}
+					} );
 				}
 
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );

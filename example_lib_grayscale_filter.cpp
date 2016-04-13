@@ -24,11 +24,20 @@
 #include <cassert>
 #include <genericimage.h>
 #include <filterdawgs.h>
+#include <chrono>
 
 int main( int argc, char ** argv ) {
 	assert( argc > 2 );
 	using namespace daw::imaging;
+
+	auto start = std::chrono::system_clock::now( );
 	FilterDAWGS::filter( from_file( argv[1] ) ).to_file( argv[2] );
+	auto end = std::chrono::system_clock::now( );
+
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	auto end_time = std::chrono::system_clock::to_time_t( end );
+
+	std::cout << "finished computation at " << std::ctime( &end_time ) << "elapsed time: " << elapsed_seconds.count( ) << "s\n";
 
 
 	return EXIT_SUCCESS;
