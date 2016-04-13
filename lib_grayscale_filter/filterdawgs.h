@@ -35,7 +35,7 @@ namespace daw {
 	namespace imaging {
 		class FilterDAWGS {
 		public:
-			static GenericImage<rgb3> filter( GenericImage<rgb3> input_image );
+			static GenericImage<rgb3> filter( GenericImage<rgb3> const & input_image );
 
 			static std::string description( ) {
 				return "Convert an RGB image to an optimized grayscale image";

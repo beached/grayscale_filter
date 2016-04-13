@@ -36,7 +36,7 @@
 
 namespace daw {
 	namespace imaging {
-		GenericImage<rgb3> FilterDAWGS::filter( GenericImage<rgb3> image_input ) {
+		GenericImage<rgb3> FilterDAWGS::filter( GenericImage<rgb3> const & image_input ) {
 			//no parallel to valuepos
 			using valuepos_t = std::unordered_map<int32_t, int32_t>;
 			valuepos_t valuepos;
