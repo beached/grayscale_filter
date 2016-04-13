@@ -81,7 +81,7 @@ namespace daw {
 			 GenericImage<GenericRGB<int32_t>> repaint_yuv( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// YUV
 					// Convert back to YUV with Y being the current grayscale value and then back to RGB
@@ -102,7 +102,7 @@ namespace daw {
 			 GenericImage<GenericRGB<int32_t>> repaint_multiply_1( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					return GenericRGB<int32_t>( orig.red*grayscale, orig.green*grayscale, orig.blue*grayscale );
 				} );
@@ -112,7 +112,7 @@ namespace daw {
 			GenericImage<GenericRGB<int32_t>> repaint_addition( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					return GenericRGB<int32_t>( orig.red + grayscale, orig.green + grayscale, orig.blue + grayscale );
 				} );
@@ -122,7 +122,7 @@ namespace daw {
 			 GenericImage<GenericRGB<int32_t>> repaint_multiply_2( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// Mul 2, Mul with individual scaling based on max( R, G, B )
 					auto const maxval = static_cast<float>(orig.max( ));
@@ -141,7 +141,7 @@ namespace daw {
 			 GenericImage<GenericRGB<int32_t>> repaint_hsl( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// HSL
 					auto luma = static_cast<float>(grayscale) / 255.0f;
@@ -256,7 +256,7 @@ namespace daw {
 
 			GenericImage<rgb3> output_image( input_image.width( ), input_image.height( ) );
 
-			std::transform( tmpimgdata.begin( ), tmpimgdata.end( ), output_image.begin( ), [&]( auto const & rgb ) {
+			daw::algorithm::parallel::transform( tmpimgdata.begin( ), tmpimgdata.end( ), output_image.begin( ), [&]( auto const & rgb ) {
 				GenericRGB<uint32_t> cur_value;
 
 				cur_value.red = static_cast<int32_t>(static_cast<float>(rgb.red - pd_min.red)*mul_fact);

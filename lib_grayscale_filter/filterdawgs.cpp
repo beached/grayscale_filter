@@ -23,7 +23,7 @@
 #include "filterdawgs.h"
 #include "genericimage.h"
 #include "genericrgb.h"
-
+#include "daw_parallel_algorithm.h"
 #include <boost/scoped_array.hpp>
 #include <boost/unordered/unordered_map.hpp>
 #include <iterator>
@@ -75,7 +75,7 @@ namespace daw {
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
 				// TODO: make parallel
-				std::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), [&vp=valuepos]( rgb3 const & rgb ) {
+				daw::algorithm::parallel::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), [&vp=valuepos]( rgb3 const & rgb ) {
 					return static_cast<uint8_t>(vp[FilterDAWGS::too_gs( rgb )]);
 				} );
 				return image_output;
@@ -85,7 +85,7 @@ namespace daw {
 
 				assert( image_input.size( ) <= image_output.size( ) );
 				// TODO: make parallel
-				std::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
+				daw::algorithm::parallel::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
 					return static_cast<uint8_t>(rgb.too_float_gs( ));
 				} );
 				return image_output;
