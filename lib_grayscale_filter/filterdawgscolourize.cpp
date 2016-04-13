@@ -25,7 +25,7 @@
 #include "genericrgb.h"
 #include "helpers.h"
 #include "daw_algorithm.h"
-
+#include "daw_parallel_algorithm.h"
 #include <boost/math/special_functions/round.hpp>
 #include <cassert>
 #include <cmath>
@@ -55,7 +55,7 @@ namespace daw {
 			 GenericImage<GenericRGB<int32_t>> repaint_ratio( GenericImage<rgb3> const & input_image, GenericImage<rgb3> const & input_gsimage ) {
 				assert( input_image.size( ) == input_gsimage.size( ) );
 				GenericImage<GenericRGB<int32_t>> output_image( input_image.width( ), input_image.height( ) );
-				daw::algorithm::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
+				daw::algorithm::parallel::transform_many( input_image.begin( ), input_image.end( ), input_gsimage.begin( ), output_image.begin( ), []( rgb3 orig, rgb3 const grayscale3 ) {
 					uint8_t grayscale = grayscale3.blue;
 					// Luma = Rx + Gy +Bz
 					// We want Luma -> Luma2 
