@@ -50,7 +50,7 @@ namespace daw {
 				auto const inc = static_cast<float>( valuepos.size( ) ) / 256.0f;
 				{
 					daw::array<int32_t> keys( valuepos.size( ) );
-					daw::algorithm::parallel::transform( valuepos.begin( ), valuepos.end( ), keys.begin( ), []( auto val ) {
+					daw::algorithm::parallel::non::transform( valuepos.begin( ), valuepos.end( ), keys.begin( ), []( auto val ) {
 						return val.first;
 					} );
 
@@ -66,7 +66,7 @@ namespace daw {
 				GenericImage<rgb3> image_output( image_input.width( ), image_input.height( ) );
 
 				// TODO: make parallel
-				daw::algorithm::parallel::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), [&vp=valuepos]( rgb3 const & rgb ) {
+				daw::algorithm::parallel::non::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), [&vp=valuepos]( rgb3 const & rgb ) {
 					return static_cast<uint8_t>(vp[FilterDAWGS::too_gs( rgb )]);
 				} );
 				return image_output;
@@ -76,7 +76,7 @@ namespace daw {
 
 				assert( image_input.size( ) <= image_output.size( ) );
 				// TODO: make parallel
-				daw::algorithm::parallel::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
+				daw::algorithm::parallel::non::transform( image_input.begin( ), image_input.end( ), image_output.begin( ), []( rgb3 const & rgb ) {
 					return static_cast<uint8_t>(rgb.too_float_gs( ));
 				} );
 				return image_output;

@@ -34,44 +34,43 @@
 namespace daw {
 	namespace imaging {
 		template<class T>
-		class GenericRGB {
+		class GenericRGB final {
 		public:
 			T blue;
 			T green;
 			T red;
 
 			GenericRGB( ): blue( 0 ), green( 0 ), red( 0 ) { }
-			GenericRGB( const T& GS ): blue( GS ), green( GS ), red( GS ) { }
-			GenericRGB( const T& Red, const T& Green, const T& Blue ): blue( Blue ), green( Green ), red( Red ) { }
+			GenericRGB( T const & GS ): blue( GS ), green( GS ), red( GS ) { }
+			GenericRGB( T const & Red, T const & Green, T const & Blue ): blue( Blue ), green( Green ), red( Red ) { }
 
-			void set_all( const T& Red, const T& Green, const T& Blue ) {
+			void set_all( T const & Red, T const & Green, T const & Blue ) {
 				blue = Blue;
 				green = Green;
 				red = Red;
 			}
 
-			void set_all( const T& grayscale ) {
+			void set_all( T const & grayscale ) {
 				blue = grayscale;
 				green = grayscale;
 				red = grayscale;
 			}
 
 
-			GenericRGB &operator=( const GenericRGB &src ) {
-				red = src.red;
-				green = src.green;
-				blue = src.blue;
-				return *this;
-			}
+			GenericRGB( GenericRGB const & ) = default;
+			GenericRGB( GenericRGB && ) = default;
+			GenericRGB & operator=( GenericRGB const & ) = default;
+			GenericRGB & operator=( GenericRGB && ) = default;
+			~GenericRGB( ) = default;
 
-			GenericRGB &operator=( T const &src ) {
+			GenericRGB & operator=( T const & src ) {
 				red = src;
 				green = src;
 				blue = src;
 				return *this;
 			}
 
-			static float colform( const GenericRGB<T>& c, float Red, float Green, float Blue ) {
+			static float colform( GenericRGB<T> const & c, float Red, float Green, float Blue ) {
 				return Red*static_cast<float>( c.red ) + Green*static_cast<float>( c.green ) + Blue*static_cast<float>( c.blue );
 			}
 
@@ -119,13 +118,13 @@ namespace daw {
 				return ret;
 			}
 
-			void mul( const T& value ) {
+			void mul( T const & value ) {
 				blue *= value;
 				green *= value;
 				red *= value;
 			}
 
-			void div( const T& value ) {
+			void div( T const & value ) {
 				blue /= value;
 				green /= value;
 				red /= value;
@@ -139,15 +138,15 @@ namespace daw {
 			static void register_python( std::string const & nameoftype ) {
 				boost::python::class_<GenericRGB>( nameoftype.c_str( ), boost::python::init<>( ) )
 					.def( bpython::init<T, T, T>( ) )
-					.def_readwrite( "red", &GenericRGB::red )
-					.def_readwrite( "green", &GenericRGB::green )
-					.def_readwrite( "blue", &GenericRGB::blue );
+					.def_readwrite( "red", & GenericRGB::red )
+					.def_readwrite( "green", & GenericRGB::green )
+					.def_readwrite( "blue", & GenericRGB::blue );
 			}
 #endif
 		};
 		
 		template<typename L, typename R>
-		void min( const GenericRGB<L> &value, GenericRGB<R> &cur_min ) {
+		void min( GenericRGB<L> const & value, GenericRGB<R> & cur_min ) {
 			if( value.red < cur_min.red ) {
 				cur_min.red = value.red;
 			}
@@ -160,7 +159,7 @@ namespace daw {
 		}
 
 		template<typename L, typename R>
-		void max( const GenericRGB<L> &value, GenericRGB<R> &cur_max ) {
+		void max( GenericRGB<L> const & value, GenericRGB<R> & cur_max ) {
 			if( value.red > cur_max.red ) {
 				cur_max.red = value.red;
 			}
