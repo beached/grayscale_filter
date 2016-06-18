@@ -9,10 +9,6 @@ set( Boost_USE_MULTITHREADED ON )
 set( Boost_USE_STATIC_RUNTIME OFF ) 
 find_package( Boost 1.59.0 REQUIRED COMPONENTS system filesystem regex unit_test_framework program_options iostreams )
 
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
-
-find_package( FreeImage REQUIRED )
-
 if( ${CMAKE_CXX_COMPILER_ID} STREQUAL 'MSVC' )
 	add_compile_options( -D_WIN32_WINNT=0x0601 )
 else( )
@@ -46,6 +42,6 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
-add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
+#add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
 target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
 
