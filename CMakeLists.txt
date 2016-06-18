@@ -1,12 +1,13 @@
-cmake_minimum_required( VERSION 2.8.4 )
+cmake_minimum_required( VERSION 2.8.12 )
 
-project( grayscale_filter )
+project( example_grayscale_filter_prj )
 
 include( ExternalProject )
 
 set( Boost_USE_STATIC_LIBS OFF ) 
 set( Boost_USE_MULTITHREADED ON )  
 set( Boost_USE_STATIC_RUNTIME OFF ) 
+
 find_package( Boost 1.59.0 REQUIRED COMPONENTS system filesystem regex unit_test_framework program_options iostreams )
 
 if( ${CMAKE_CXX_COMPILER_ID} STREQUAL 'MSVC' )
@@ -18,10 +19,11 @@ else( )
 	endif( )
 
 	if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
-		add_compile_options( -std=c++14 -stdlib=libc++ -Weverything -Wno-c++98-compat -Wfatal-
+		add_compile_options(-std=c++14 -stdlib=libc++ -Weverything -Wno-c++98-compat -Wfatal-errors -Wno-covered-switch-default -Wno-padded -Wno-exit-time-destructors -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-missing-noreturn -Wno-missing-prototypes -Wno-disabled-macro-expansion)		
 	elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
 		add_compile_options( -std=c++14 -Wall -Wno-deprecated-declarations )
 	endif( )
+
 endif( )
 
 externalproject_add(
@@ -42,6 +44,6 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
-#add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
-target_link_libraries( example_lib_grayscale_filter lib_grayscale_filter ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
+add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
+target_link_libraries( example_lib_grayscale_filter grayscale_filter_shared ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
 
