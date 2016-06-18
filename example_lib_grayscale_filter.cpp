@@ -22,8 +22,8 @@
 
 #include <cstdlib>
 #include <cassert>
-#include <genericimage.h>
-#include <filterdawgs.h>
+#include <daw/lib_grayscale_filter/genericimage.h>
+#include <daw/lib_grayscale_filter/filterdawgs.h>
 #include <chrono>
 
 int main( int argc, char ** argv ) {
