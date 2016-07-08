@@ -47,6 +47,9 @@ link_directories( "${CMAKE_BINARY_DIR}/install/lib" )
 
 include_directories( SYSTEM ${Boost_INCLUDE_DIRS} )
 link_directories( ${Boost_LIBRARY_DIRS} )
+include_directories( SYSTEM ${FREEIMAGE_INCLUDE_DIRS} )
+link_directories( ${FREEIMAGE_LIBRARIES} )
+
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
 add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
