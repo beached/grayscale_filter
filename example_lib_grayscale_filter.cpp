@@ -22,8 +22,8 @@
 
 #include <cstdlib>
 #include <cassert>
-#include <daw/lib_grayscale_filter/genericimage.h>
-#include <daw/lib_grayscale_filter/filterdawgs.h>
+#include <daw/grayscale_filter/genericimage.h>
+#include <daw/grayscale_filter/filterdawgs2.h>
 #include <chrono>
 
 int main( int argc, char ** argv ) {
@@ -31,7 +31,7 @@ int main( int argc, char ** argv ) {
 	using namespace daw::imaging;
 
 	auto start = std::chrono::system_clock::now( );
-	FilterDAWGS::filter( from_file( argv[1] ) ).to_file( argv[2] );
+	FilterDAWGS2::filter( from_file( argv[1] ) ).to_file( argv[2] );
 	auto end = std::chrono::system_clock::now( );
 
 	std::chrono::duration<double> elapsed_seconds = end - start;

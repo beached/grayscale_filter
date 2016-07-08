@@ -1,14 +1,19 @@
-cmake_minimum_required( VERSION 2.8.12 )
+	cmake_minimum_required( VERSION 2.8.12 )
 
 project( example_grayscale_filter_prj )
 
 include( ExternalProject )
+
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR} )
+find_package( FreeImage REQUIRED )
 
 set( Boost_USE_STATIC_LIBS OFF ) 
 set( Boost_USE_MULTITHREADED ON )  
 set( Boost_USE_STATIC_RUNTIME OFF ) 
 
 find_package( Boost 1.59.0 REQUIRED COMPONENTS system filesystem regex unit_test_framework program_options iostreams )
+
+
 
 if( ${CMAKE_CXX_COMPILER_ID} STREQUAL 'MSVC' )
 	add_compile_options( -D_WIN32_WINNT=0x0601 )
