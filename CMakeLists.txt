@@ -53,5 +53,5 @@ link_directories( ${FREEIMAGE_LIBRARIES} )
 
 add_executable( example_lib_grayscale_filter example_lib_grayscale_filter.cpp )
 add_dependencies( example_lib_grayscale_filter lib_grayscale_filter_prj )
-target_link_libraries( example_lib_grayscale_filter grayscale_filter_shared ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
+target_link_libraries( example_lib_grayscale_filter grayscale_filter ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
 
