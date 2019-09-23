@@ -49,6 +49,17 @@ externalproject_add(
 	TEST_COMMAND ""
 )
 
+externalproject_add(
+	function_stream_prj
+	GIT_REPOSITORY "https://github.com/beached/function_stream.git"
+	GIT_TAG "master"
+	SOURCE_DIR "${CMAKE_BINARY_DIR}/dependencies/function_stream"
+	INSTALL_DIR "${CMAKE_BINARY_DIR}/install"
+	CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install
+	PATCH_COMMAND ""
+	TEST_COMMAND ""
+)
+
 set( HEADER_FOLDER "include" )
 set( SOURCE_FOLDER "src" )
 set( TEST_FOLDER "tests" )
@@ -70,5 +81,5 @@ link_directories( ${FREEIMAGE_LIBRARIES} )
 
 add_executable( example_lib_grayscale_filter ${HEADER_FILES} ${SOURCE_FOLDER}/example_lib_grayscale_filter.cpp )
 add_dependencies( example_lib_grayscale_filter header_libraries_prj lib_grayscale_filter_prj )
-target_link_libraries( example_lib_grayscale_filter grayscale_filter ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
+target_link_libraries( example_lib_grayscale_filter task_scheduler_lib function_stream_lib grayscale_filter ${CMAKE_DL_LIBS} ${Boost_LIBRARIES} ${FREEIMAGE_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${COMPILER_SPECIFIC_LIBS} )
 
